@@ -49,13 +49,13 @@ int main(int argc, char *argv[])
     outputFile<<"/run/beamOn "<< nevents << endl;
     outputFile.close();
   }
-  fileName = "sbatchMap";
+  string sfileName = "sbatchMap";
   for(int i = 0; i < nslice ; i++){
     double z = zMax - binSize*i;
-    //cout<<"Setting Z to "<<z<<"mm...Range is from 300mm to -300mm , fileName is "<<fileName+ std::to_string(i) +string(".sh")<<endl;
+    //cout<<"Setting Z to "<<z<<"mm...Range is from 300mm to -300mm , fileName is "<<sfileName+ std::to_string(i) +string(".sh")<<endl;
     string macroName = fileName+std::to_string(i)+string(".mac");
-    string logName = fileName+std::to_string(i)+string(".log");
-    outputFile.open(fileName + std::to_string(i) +string(".sh"));
+    string logName = sfileName+std::to_string(i)+string(".log");
+    outputFile.open(sfileName + std::to_string(i) +string(".sh"));
     outputFile<<"#!/bin/bash -l"<<endl;
     outputFile<<"#SBATCH --mail-type=begin,end,fail"<<endl;
     outputFile<<"#SBATCH --mail-user=mgold@unm.edu"<<endl;
@@ -70,10 +70,10 @@ int main(int argc, char *argv[])
     outputFile<<"#SBATCH --image=docker:legendexp/legend-base:latest"<<endl;
     outputFile<<"#SBATCH --export=LD_LIBRARY_PATH=/global/project/projectdirs/m2676/users/mgold/shifter/MGDO/lib:/opt/root/lib:/usr/lib64:/opt/clhep/lib:/opt/geant4/lib64:/opt/geant4/lib64:/opt/clhep/lib:/opt/hdf5/lib"<<endl;
     outputFile<<"#SBATCH --export=projectdir=/global/project/projectdirs/m2676/users/mgold/shifter/baconSim"<<endl;
-    outputFile<<"#export projectdir=/global/project/projectdirs/m2676/users/mgold/shifter/baconSim"<<endl;
+    outputFile<<"export projectdir=/global/project/projectdirs/m2676/users/mgold/shifter/baconSim"<<endl;
     outputFile<<"export macro="<< macroName << endl;
     outputFile<<"export logfile=" << logName << endl;
-    outputFile<<"srun --output=$projectdir/$logfile -n 1  -C haswell shifter --env-file=$projectdir/MaGeEnvirons $projectdir/bin/Linux-g++/MaGe $projectdir/$macro"<< endl;
+    outputFile<<"srun --output=$projectdir/$logfile -n 1  -C haswell shifter --env-file=$projectdir/MaGeEnvirons $projectdir/bin/Linux-g++/MaGe $projectdir/opticalMap/$macro"<< endl;
      outputFile.close();
   }
 
