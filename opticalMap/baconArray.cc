@@ -73,9 +73,7 @@ int main(int argc, char *argv[])
     outputFile<<"#export projectdir=/global/project/projectdirs/m2676/users/mgold/shifter/baconSim"<<endl;
     outputFile<<"export macro="<< macroName << endl;
     outputFile<<"export logfile=" << logName << endl;
-    outputFile<<"echo srun --output=$projectdir/$logfile.log -n 1  -C haswell shifter --env-file=$projectdir/MaGeEnvirons $projectdir/bin/Linux-g++/MaGe $projectdir/$macro" << endl;
-    // outputFile<<"srun --output=$projectdir/$logfile -n 1  -C haswell shifter --env-file=$projectdir/MaGeEnvirons 
-    // $projectdir/bin/Linux-g++/MaGe $projectdir/$macro"<< endl;
+    outputFile<<"srun --output=$projectdir/$logfile -n 1  -C haswell shifter --env-file=$projectdir/MaGeEnvirons $projectdir/bin/Linux-g++/MaGe $projectdir/$macro"<< endl;
      outputFile.close();
   }
 
