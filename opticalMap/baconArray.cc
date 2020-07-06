@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <cstdlib>
 #include <sstream>
 #include <string>
 
@@ -20,8 +21,7 @@ int main(int argc, char *argv[])
   for(int i = 0; i < nslice ; i++){
     double z = zMax - binSize*i;
     //cout<<"Setting Z to "<<z<<"mm...Range is from 300mm to -300mm , fileName is "<<fileName+ std::to_string(i) +string(".mac")<<endl;
-    string n = std::to_string(i);
-    outputFile.open(fileName + std::to_string(i) +string(".mac"));
+    outputFile.open(fileName + to_string(i) +string(".mac"));
     outputFile<<"/MG/manager/mglog routine"<<endl;
     outputFile<<"/MG/manager/seedWithUUID"<<endl;
     outputFile<<"/MG/processes/realm DarkMatter"<<endl;
@@ -49,13 +49,13 @@ int main(int argc, char *argv[])
     outputFile<<"/run/beamOn "<< nevents << endl;
     outputFile.close();
   }
-  string sfileName = "sbatchMap";
+  string sfileName("sbatchMap");
   for(int i = 0; i < nslice ; i++){
     double z = zMax - binSize*i;
     //cout<<"Setting Z to "<<z<<"mm...Range is from 300mm to -300mm , fileName is "<<sfileName+ std::to_string(i) +string(".sh")<<endl;
-    string macroName = fileName+std::to_string(i)+string(".mac");
-    string logName = sfileName+std::to_string(i)+string(".log");
-    outputFile.open(sfileName + std::to_string(i) +string(".sh"));
+    string macroName = fileName+to_string(i)+string(".mac");
+    string logName = sfileName+to_string(i)+string(".log");
+    outputFile.open(sfileName + to_string(i) +string(".sh"));
     outputFile<<"#!/bin/bash -l"<<endl;
     outputFile<<"#SBATCH --mail-type=begin,end,fail"<<endl;
     outputFile<<"#SBATCH --mail-user=mgold@unm.edu"<<endl;
