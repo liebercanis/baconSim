@@ -11,7 +11,7 @@
 
 #EXTRA_LINK_DEPENDENCIES += $(PACKAGES)
 
-MGBINDIR = /home/nmcfadden/XenonDoping/bin/Linux-g++
+MGBINDIR = /home/gold/bacon/baconSim/bin/Linux-g++
 # here dealing with the circular dependencies.
 # we remove multiple declarations
 MGTARGETDEPSORTED := $(sort $(MGTARGETDEPS))
@@ -26,6 +26,7 @@ MGBINS := $(addprefix $(MGBINDIR)/,$(MGTARGETS))
 MGBINLIBDEPS = $(foreach package,$(MGTARGETDEPS),$(MGTMPDIR)/$(package)/lib$(package).$(MGLIBEXT))
 MGBINLIBDIRS = $(foreach package,$(MGTARGETDEPS),-L$(MGTMPDIR)/$(package))
 MGBINLIBS = $(G4LIBDIR)/lib$(name).$(MGLIBEXT) $(MGBINLIBDEPS) $(filter-out $(MGLIBS), $(LDLIBS)) 
+MGBINLIBS += -L$(MAGEDIR)/io/obj/ -lLegendRoot
 MGBINDEPS = $(patsubst %, $(MGTMPDIR)/%.d, $(MGTARGETS))
 
 ifndef GLOBALLIBS
