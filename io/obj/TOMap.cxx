@@ -3,7 +3,6 @@ ClassImp(TOMap)
 
 TOMap::TOMap(): TNamed("TOMap","TOMap")
 {
-  QE=1.0;
   clear();
 }
 
@@ -28,5 +27,10 @@ void TOMap::addDet(TOMapDet d) {
 void TOMap::print()
 {
   printf("TOMap #maps  = %u \n",(unsigned)mapList.size());
+  std::map<std::string,TOMapDet>::iterator iter = mapList.begin();
+  while (iter != mapList.end()) {
+    printf(" %s %.3f \n",iter->second.GetName(),iter->second.QE);
+    ++iter;
+  }
 }
 

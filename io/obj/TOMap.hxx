@@ -21,32 +21,20 @@ class TOMap: public TNamed {
     // data elements
     std::map<std::string,TOMapDet>  mapList;
     void addDet(TOMapDet d);
-    TH3D *getRaw(TString name) {
+    TOMapDet *getMap(TString name) {
       std::map<std::string,TOMapDet>::iterator iter = mapList.find(name.Data());
-      if(iter != mapList.end()) return iter->second.hMapRaw;
+      if(iter != mapList.end()) return &(iter->second);
       return NULL;
    }
-    TH3D *getNorm(TString name) {
-      std::map<std::string,TOMapDet>::iterator iter = mapList.find(name.Data());
-      if(iter != mapList.end()) return iter->second.hMapNorm;
-      return NULL;
-   }
-    TH3D *getMap(TString name) {
-      std::map<std::string,TOMapDet>::iterator iter = mapList.find(name.Data());
-      if(iter != mapList.end()) return iter->second.hMap;
-      return NULL;
-   }
-
+    
     void normalize() {
       std::map<std::string,TOMapDet>::iterator iter = mapList.begin();
        while (iter != mapList.end()) {
-         iter->second.doNorm(QE);
+         iter->second.doNorm();
          ++iter;
        }
     }
-    double QE;
-    void setQE(double val ) { QE=val;}
-    double getQE() { return QE;}
+    
     //
   ClassDef(TOMap,1)
 };
