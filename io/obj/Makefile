@@ -1,5 +1,6 @@
-# makefile for LegendRoot 
-# MGold, June 2020
+# makefile for captRoot libcaptRoot.so 
+# MGold, Jan 2016
+# not yet ported to OSX!
 ########################################################
 LIBNAME :=LegendRoot
 ARCH  = $(shell root-config --arch)
