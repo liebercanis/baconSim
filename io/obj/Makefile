@@ -2,7 +2,7 @@
 # MGold, Jan 2016
 # not yet ported to OSX!
 ########################################################
-LIBNAME :=LegendRoot
+LIBNAME :=baconSimRoot
 ARCH  = $(shell root-config --arch)
 include $(ROOTSYS)/etc/Makefile.arch
 
