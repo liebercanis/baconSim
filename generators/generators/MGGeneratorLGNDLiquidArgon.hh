@@ -31,7 +31,7 @@
 *
 * DESCRIPTION: 
 *
-*/ 
+*/
 // Begin description of class here
 /**
 *
@@ -52,7 +52,7 @@
 * shows an example of how to use GSS with this class.
 *
 */
-// 
+//
 // --------------------------------------------------------------------------//
 /** 
 * AUTHOR: Neil McFadden
@@ -88,50 +88,52 @@ class G4Run;
 class MGGeneratorLGNDLiquidArgon : public MGVGenerator
 {
 
-  public:
-    MGGeneratorLGNDLiquidArgon();
+public:
+  MGGeneratorLGNDLiquidArgon();
 
-    MGGeneratorLGNDLiquidArgon(const MGGeneratorLGNDLiquidArgon &);
+  MGGeneratorLGNDLiquidArgon(const MGGeneratorLGNDLiquidArgon &);
 
-    ~MGGeneratorLGNDLiquidArgon();
-    //public interface
-    void GeneratePrimaryVertex(G4Event *event);
-    void SetParticlePosition(G4ThreeVector pos) { fCurrentPosition = pos;} 
+  ~MGGeneratorLGNDLiquidArgon();
+  //public interface
+  void GeneratePrimaryVertex(G4Event *event);
+  void SetParticlePosition(G4ThreeVector pos) { fCurrentPosition = pos; }
 
-    void DirectionDecider();
-    void EnergyDecider();
-    void PositionDecider();
-    void PositionDecider(G4double x,G4double y,G4double z,G4double binWidth); 
-    void ParticleDecider();
-    G4bool IsInArgon(G4ThreeVector rp);
-    
-    //Messenger Commands
-    void SetRadius(G4double r){fRadiusMax = r;}
-    void SetRadiusMin(G4double r){fRadiusMin = r;}
-    void SetHeight(G4double h){fZ = h;}
-    void SetCenterVector(G4ThreeVector vec){fCenterVector = vec;}
-    void SetParticleType(G4String str){fParticleType = str;}
-    void SetParticleEnergy(G4double nrg){fEnergy = nrg;}
-    void SetBinWidth(G4double width) {fBinWidth = width;}
-    void SetNParticles(G4double N) {fNParticles = N;}
+  void DirectionDecider();
+  void EnergyDecider();
+  void PositionDecider();
+  void PositionDecider(G4double x, G4double y, G4double z, G4double binWidth);
+  void ParticleDecider();
+  G4bool IsInArgon(G4ThreeVector rp);
 
+  //Messenger Commands
+  void SetRadius(G4double r) { fRadiusMax = r; }
+  void SetRadiusMin(G4double r) { fRadiusMin = r; }
+  void SetHeight(G4double h) { fZ = h; }
+  void SetCenterVector(G4ThreeVector vec) { fCenterVector = vec; }
+  void SetParticleType(G4String str) { fParticleType = str; }
+  void SetParticleEnergy(G4double nrg) { fEnergy = nrg; }
+  void SetBinWidth(G4double width)
+  {
+    MGLog(routine) << " MGGeneratorLGNDLiquidArgon setting bin width  " << width << endlog;
+    fBinWidth = width;
+  }
+  void SetNParticles(G4double N) { fNParticles = N; }
 
-
-  private:
-    static const G4double LambdaE;
-	  G4ParticleGun*	fParticleGun;
-    //particle properties
-    G4double  fCurrentEnergy; // energy of current particle
-    G4ThreeVector fCurrentPosition; // current position of particle
-    G4ThreeVector fDirection; // direction of momentum
-    G4double fRadiusMax = 0;
-    G4double fRadiusMin = 0;
-    G4double fZ = 0;
-    G4double fBinWidth = 0;
-    G4double fNParticles = 1;
-    G4ThreeVector fCenterVector;
-    G4String fParticleType = "opticalphoton";
-    G4double fEnergy = 0;
-
+private:
+  static const G4double LambdaE;
+  G4ParticleGun *fParticleGun;
+  //particle properties
+  G4double fCurrentEnergy;        // energy of current particle
+  G4ThreeVector fCurrentPosition; // current position of particle
+  G4ThreeVector fDirection;       // direction of momentum
+  G4double fRadiusMax = 0;
+  G4double fRadiusMin = 0;
+  G4double fZ = 0;
+  G4double fZ0 = 0; // set to bottom of cryostat
+  G4double fBinWidth = 0;
+  G4double fNParticles = 1;
+  G4ThreeVector fCenterVector;
+  G4String fParticleType = "opticalphoton";
+  G4double fEnergy = 0;
 };
 #endif

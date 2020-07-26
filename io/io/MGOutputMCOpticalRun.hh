@@ -38,6 +38,9 @@
 #include "MGTMCEventSteps.hh"
 #include "MGTMCRun.hh"
 #include "G4VPhysicalVolume.hh"
+#include "obj/TLArEvent.hxx"
+#include "obj/TOMap.hxx"
+
 
 
 class G4Event;
@@ -184,22 +187,15 @@ public:
   /// Return whether particle is a germanium nucleus.
   static bool MaGeParticleIDIsGeNucleus(int pid);
 
+
+
   //Add root histograms for optical maps
   TDirectory *opticalDir;
+  TOMap *oMap;
+  G4Navigator *navigator;
+  TLArEvent* fLArEvent;
+  TLArHit* fLArHit;
 
-  TH3D* hMapUnscaled;
-  TH2D* h2DMapRZUnscaled;
-  TH2D* h2DMapXYUnscaled;
-  TH2D* h2DMapYZUnscaled;
-  TH3D* hMapNorm;
-  TH2D* h2DMapRZNorm;
-  TH2D* h2DMapXYNorm;
-  TH2D* h2DMapYZNorm;
-  TH3D* hMap;
-  TH2D* h2DMapRZ;
-  TH2D* h2DMapXY;
-  TH2D* h2DMapYZ;
-  TH1D* hWeight;
 
 
 private:

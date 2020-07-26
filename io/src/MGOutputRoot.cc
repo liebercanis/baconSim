@@ -57,13 +57,12 @@
 #include "io/MGOutputRoot.hh"
 
 TTree* MGOutputRoot::fTree = NULL;
+TTree* MGOutputRoot::fATree = NULL;
+TTree* MGOutputRoot::fLTree = NULL;
 TFile* MGOutputRoot::fRootFile = NULL;
 
 MGOutputRoot::MGOutputRoot(G4bool isMother): fIsMother(isMother)
 {
-
-
-
 }
 
 void MGOutputRoot::OpenFile()
@@ -78,18 +77,17 @@ void MGOutputRoot::CloseFile()
 { 
   PrepareFileForClosing();
   WriteFile();
-  if(fTree && MGLogger::GetSeverity() <= MGLogger::trace) fTree->Print();
-  if(fRootFile != NULL) {
-    fRootFile->Close(); // deletes fTree for us
-    delete fRootFile;
-    fRootFile = NULL;
-    fTree = NULL;
-  }
+  //if(fTree && MGLogger::GetSeverity() <= MGLogger::trace) fTree->Print();
+  //if(fRootFile != NULL) fRootFile->Close(); // deletes fTree for us
+  MGLog(routine) <<" ready to closed file " << fFileName << " in MGMangementEventAction " << endlog;
 }
 
 void MGOutputRoot::WriteFile()
 {
   // Write out root file.  Useful for writing out data during runs.
   if(fTree) fTree->Write(fTree->GetName(),TObject::kOverwrite);
+  if(fATree) fATree->Write(fATree->GetName(),TObject::kOverwrite);
+  if(fLTree) fLTree->Write(fLTree->GetName(),TObject::kOverwrite);
+  MGLog(routine) <<" wrote file " << fFileName << endlog;
 }
 

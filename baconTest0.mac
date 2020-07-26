@@ -1,0 +1,23 @@
+/MG/manager/mglog routine
+/MG/manager/seedWithUUID
+/MG/processes/realm DarkMatter
+/MG/processes/lowenergy false
+/MG/processes/opticalOnly true
+/MG/geometry/detector BACON
+/MG/BACON/SetLiquid Xenon-Doped-Argon-Liq
+/run/initialize
+/MG/eventaction/rootschema MCOpticalRun
+/MG/eventaction/reportingfrequency 10
+/MG/eventaction/rootfilename baconTest0.root
+/MG/io/MCOpticalRun/setRunID 001
+/MG/io/MCOpticalRun/useTimeWindow true
+/MG/io/MCOpticalRun/setTimeWindow 86400 second
+/MG/io/MCOpticalRun/setNSteps 10000000000000
+/MG/generator/select LGNDLiquidArgon
+/MG/generator/LGNDLiquidArgon/SetRadiusMax 250. mm
+/MG/generator/LGNDLiquidArgon/SetRadiusMin 0. mm
+/MG/generator/LGNDLiquidArgon/SetHeight 130.0 mm
+/MG/generator/LGNDLiquidArgon/SetCenterVector 0.0 0.0 0.0 mm
+/MG/generator/LGNDLiquidArgon/SetNParticles 1
+/MG/generator/LGNDLiquidArgon/SetBinWidth 5 mm
+/run/beamOn 1

@@ -163,14 +163,19 @@ class MGOutputRoot : public MGVOutputManager
     // G4String GetFileName() { return fFileName; }
     TFile *GetRootFile() { return fRootFile; }
     TTree *GetTree() { return fTree; }
+    TTree *GetATree() { return fATree; }
+    TTree *GetGTree() { return fLTree; }
     G4bool IsMother() { return fIsMother; }
     void SetRootFileName(G4String name) { SetFileName(name);}
     void SetRootFile(TFile *rfile) { fRootFile = rfile; }
     void SetTree(TTree *XtalTree) { fTree = XtalTree; }
 
   protected:
-    static TTree *fTree; 
     // Tree that is written to file that contains event information.
+    static TTree *fTree;
+    // Tree for LAr veto
+    static TTree *fATree;
+    static TTree *fLTree;
 
   private:
     static TFile *fRootFile;

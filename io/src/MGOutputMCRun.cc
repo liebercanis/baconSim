@@ -354,14 +354,14 @@ void MGOutputMCRun::BeginOfRunAction()
   // To be added later... for now, get sensitive vols from physical vol names
   G4PhysicalVolumeStore* volStore = G4PhysicalVolumeStore::GetInstance();
   
-  MGLog(routine) << "this geometry has " << volStore->size() << " volumes" << endlog;
+  MGLog(routine) << " this geometry has " << volStore->size() << " volumes " << endlog;
 
   for(size_t i = 0; i < volStore->size(); i++ ) {
     G4VPhysicalVolume* physicalVolume = (*volStore)[i];
     string volName = physicalVolume->GetName();
-    MGLog(routine) << "volume " << i << ": " <<  volName << ", " << physicalVolume << endlog;
-
     int sensVolID = fMCRun->GetSensitiveIDOfVolumeName(volName, false);
+    
+    MGLog(routine) << "...volume " << i << ": " <<  volName << ", " << physicalVolume << " senseID " << sensVolID<< endlog;
 
     if(sensVolID == 0) {
       if(fSensitiveIDLabelScheme == kClassic) {
@@ -427,6 +427,7 @@ void MGOutputMCRun::BeginOfRunAction()
       MGLog(routine) << "Added sensitive volume " << volName 
                      << " with ID " << sensVolID << endlog;
     }
+    MGLog(routine) << " xxxx volume " << i << ": " <<  volName << ", " << physicalVolume << " senseID " << sensVolID<< endlog;
   } // increment physical volume pointer
 
   // check the lists
@@ -435,6 +436,7 @@ void MGOutputMCRun::BeginOfRunAction()
   for(it=fSensitiveIDOfPhysicalVol.begin(); it!=fSensitiveIDOfPhysicalVol.end(); it++) {
     if(it->second) nSensVols++;
   }
+  MGLog(routine) << " total sens vol " << fMCRun->GetNSensitiveVols() << endl; 
   if(fMCRun->GetNSensitiveVols() != nSensVols) {
     MGLog(warning) << "fMCRun has " << fMCRun->GetNSensitiveVols()
                    << " vols but fSensitiveIDOfPhysicalVol has " 

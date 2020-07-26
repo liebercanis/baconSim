@@ -10,5 +10,5 @@ G4EXLIB := true
 .PHONY: all
 all: lib 
 
-include /usr/local/share/Geant4-10.4.0/geant4make/config/binmake.gmk
+include /home/admin/geant4.10.04/config/binmake.gmk
 include ../buildTools/install.mk

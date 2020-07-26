@@ -85,14 +85,17 @@ MGManagementEventAction::MGManagementEventAction(const MGManagementEventAction &
 
 MGManagementEventAction::~MGManagementEventAction()
 {
+  MGLog(routine) << " close file  " << endlog;
   if(fOutputManager) {
     fOutputManager->CloseFile();
     delete fOutputManager;
   }
+  MGLog(routine) << " close file  " << endlog;
   if(fOutputManagerPreWF) {
     fOutputManagerPreWF->CloseFile();
     delete fOutputManagerPreWF;
   }
+  MGLog(routine) << " delete  " << endlog;
   delete fG4Messenger;
 }
 
