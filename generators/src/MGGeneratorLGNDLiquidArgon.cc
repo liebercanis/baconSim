@@ -10,7 +10,7 @@
 //                                                                           //
 //                        *********************                              //
 //                                                                           //
-//    Neither the authors of this software system, nor their employing       //
+//    Neither the authors of this software syste> employing       //
 //    institutes, nor the agencies providing financial support for this      //
 //    work  make  any representation or  warranty, express or implied,       //
 //    regarding this software system or assume any liability for its use.    //
@@ -84,6 +84,15 @@ MGGeneratorLGNDLiquidArgon::MGGeneratorLGNDLiquidArgon()
   fGeneratorName = "LiquidArgon";
   fG4Messenger = new MGGeneratorLGNDLiquidArgonMessenger(this);
   fParticleGun = new G4ParticleGun(1);
+  fRadiusMax = 0;
+  fRadiusMin = 0;
+  fZ = 0;
+  fZ0 = 0; // set to bottom of cryostat
+  fBinWidth = 0;
+  fNParticles = 1;
+  fParticleType = "opticalphoton";
+  fEnergy = 0;
+  MGLog(routine) << " MGGeneratorLGNDLiquidArgon fZ  " << fZ << endlog;
 }
 
 MGGeneratorLGNDLiquidArgon::MGGeneratorLGNDLiquidArgon(const MGGeneratorLGNDLiquidArgon &other) : MGVGenerator(other)
@@ -179,7 +188,7 @@ void MGGeneratorLGNDLiquidArgon::PositionDecider()
     }
   } while (!isIn);
 
-  fCurrentPosition = rpos;
+  fPrimary = rpos;
 }
 void MGGeneratorLGNDLiquidArgon::PositionDecider(G4double xPos, G4double yPos, G4double zPos, G4double binWidth)
 {
@@ -208,12 +217,11 @@ void MGGeneratorLGNDLiquidArgon::PositionDecider(G4double xPos, G4double yPos, G
     errorCounter++;
     if (errorCounter > 1e2)
     {
-      fCurrentPosition = rpos;
+      fPrimary = rpos;
       break;
     }
   } while (!isIn);
-  MGLog(debugging) << "Generator vertex " << rpos << endlog;
-  fCurrentPosition = rpos;
+  fPrimary = rpos;
 }
 G4bool MGGeneratorLGNDLiquidArgon::IsInArgon(G4ThreeVector rpos)
 {
@@ -261,6 +269,8 @@ void MGGeneratorLGNDLiquidArgon::GeneratePrimaryVertex(G4Event *event)
   BACON_Baseline *cryostat = new BACON_Baseline("LGND200generatorCryostat");
   G4double cryoR = cryostat->GetCryostatID() / 2.;
   G4double cryoHalfZ = cryostat->GetCryostatHeight() / 2.;
+  G4double sipmDimX = cryostat->GetSipmDimX();
+  G4double sipmDimY = cryostat->GetSipmDimY();
   delete cryostat;
 
   if (fBinWidth == 0)
@@ -280,16 +290,18 @@ void MGGeneratorLGNDLiquidArgon::GeneratePrimaryVertex(G4Event *event)
   if (zMax > cryoHalfZ || fBinWidth == 0)
   {
     fBinWidth = cryoHalfZ - fZ - fCenterVector.z();
-    MGLog(routine) << " WARNING resetting fBinWdith to   " << fBinWidth << endl;
+    MGLog(routine) << " WARNING >zMax resetting fBinWdith to   " << fBinWidth << endl;
   }
   if (zMin < -cryoHalfZ)
   {
-    fZ = -cryoHalfZ - fCenterVector.z();
-    MGLog(routine) << " WARNING resetting fBinWdith to   " << fBinWidth << endl;
+    fZ = -1.0 * (cryoHalfZ + fCenterVector.z());
+    MGLog(routine) << " cryoHalfZ " << cryoHalfZ << " fCenterVector.z() " << fCenterVector.z() << " WARNING <zMin resetting fZ   " << fZ << endl;
   }
 
   if (event->GetEventID() == 0)
     MGLog(routine) << " all in mm:  "
+                   << " \n sipmDimX " << sipmDimX
+                   << " \n sipmDimY " << sipmDimY
                    << " \n cryo rmax  " << cryoR
                    << " \n cryo zmax  " << cryoHalfZ
                    << " \n cryo zmin  " << -1. * cryoHalfZ
@@ -313,12 +325,13 @@ void MGGeneratorLGNDLiquidArgon::GeneratePrimaryVertex(G4Event *event)
   //determine particle position
   //PositionDecider();
   PositionDecider();
+  MGLog(debugging) << "Generator vertex " << fPrimary << endlog;
   //determine particle energy
   EnergyDecider();
 
   //particle direction, position, and energy sent to ParticleGun
-  fParticleGun->SetParticlePosition(fCurrentPosition);
-  //G4cout<<"("<<fCurrentPosition.x()<<","<<fCurrentPosition.y()<<","<<fCurrentPosition.z()<<")"<<G4endl;
+  fParticleGun->SetParticlePosition(fPrimary);
+  //G4cout<<"("<<fPrimary.x()<<","<<fPrimary.y()<<","<<fPrimary.z()<<")"<<G4endl;
   fParticleGun->SetParticleMomentumDirection(fDirection);
   fParticleGun->SetParticleEnergy(fCurrentEnergy);
   fParticleGun->SetNumberOfParticles(1);

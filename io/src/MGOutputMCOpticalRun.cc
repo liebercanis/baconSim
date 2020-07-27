@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------//
+// current primary vertex/---------------------------------------------------------------------------//
 //bb0nubb0nubb0nubb0nubb0nubb0nubb0nubb0nubb0nubb0nubb0nubb0nubb0nubb0nubb0nu//
 //                                                                           //
 //                                                                           //
@@ -751,9 +751,8 @@ void MGOutputMCOpticalRun::RootSteppingAction(const G4Step *step)
 
     //Count photons that were detected and store their intial position
     oMap->fillNorm(fPrimX, fPrimY, fPrimZ);
-
-    MGLog(debugging) << physVolName << ", KE = " << kineticE / keV << "@ (" << position.x() << "," << position.y()
-                     << "," << position.z() << ")...Step number " << track->GetCurrentStepNumber() << endlog;
+    MGLog(debugging) << physVolName << " prim =( " << position.x() << " , " << position.y()
+                     << " , " << position.z() << " ) " << endlog;
   }
   if (fPastTrackPrimaryID != track->GetTrackID())
   {
@@ -908,6 +907,8 @@ void MGOutputMCOpticalRun::RootSteppingAction(const G4Step *step)
 
   if (sensVolID == 100 && eDep > 0)
   {
+    MGLog(routine) << " edep " << eDep << " " << eDep / eV << endlog;
+
     //Fill histograms is hit is found
     oMap->getMap("PMTMap0")->fill(eDep, fPrimX, fPrimY, fPrimZ);
   }

@@ -41,6 +41,8 @@ BACON_Baseline::BACON_Baseline(G4String version) : MGGeometryDetector(version),
   //fCryoHeight = 22.5*inch;
   fCryoHeight = 23 * inch; //24.5*inch;
   fDelta = 0.000001 * m;
+  fSipmDimX = 300.0 * mm;
+  fSipmDimY = 3.0 * mm;
 }
 
 BACON_Baseline::~BACON_Baseline()
@@ -313,9 +315,9 @@ void BACON_Baseline::ConstructDetector()
   pmtVisAtt->SetForceSolid(true);
   pmtLogical->SetVisAttributes(pmtVisAtt);
   // these are half length dimensions
-  //G4double sidimX = 3*mm;
-  G4double sidimX = 100 * mm;
-  G4double sidimZ = 3 * mm;
+
+  G4double sidimX = fSipmDimX;
+  G4double sidimZ = fSipmDimY;
   G4double sidimY = 0.5 * mm;
   G4Box *sipmSolid = new G4Box("sipmSolid", sidimX, sidimY, sidimZ);
   G4LogicalVolume *sipmLogical = new G4LogicalVolume(sipmSolid, SiMaterial, "sipmLogical");
