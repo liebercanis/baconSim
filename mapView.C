@@ -2,8 +2,18 @@ void mapView(TString name = "baconTest")
 {
   TString fname = name + TString(".root");
   TFile *fin = new TFile(fname,"READONLY");
-  TDirectory *dir;
+  if(!fin) {
+    cout << name << " not found " << endl;
+    return;
+  }
+  cout << " file " << fin->GetName()  << " opened " << endl;
+  TDirectory *dir=NULL;
   fin->GetObject("OpticalMap",dir);
+  if(!dir) {
+    cout << " OpticalMap dir  not found " << endl;
+    return;
+  }
+
   //dir->ls();
   TTree *ltree;
   TLArEvent *lev = new TLArEvent();
@@ -63,8 +73,10 @@ void mapView(TString name = "baconTest")
     if(SipmMapEDep[i]) cout  <<  SipmMapEDep[i]->GetName() << "  has   " << SipmMapEDep[i]->GetEntries() << endl;
   }
 
+  TString ctitle;
 
-  TCanvas *can = new TCanvas("PMTMap","PMTMap");
+  ctitle.Form("PmtMap%s",name.Data());
+  TCanvas *can = new TCanvas(ctitle,ctitle);
   gStyle->SetOptLogz();
   can->Divide(1,2);
   for(int i=0; i<2; ++i ) { 
@@ -72,7 +84,8 @@ void mapView(TString name = "baconTest")
     PMTMapRZ[i]->Draw("contz");
   }
 
-  TCanvas *scan = new TCanvas("SipmMap", "SipmMap");
+  ctitle.Form("SipmMap%s",name.Data());
+  TCanvas *scan = new TCanvas(ctitle,ctitle);
   gStyle->SetOptLogz();
   scan->Divide(2, 3);
   for (int i = 0; i < 6; ++i)
@@ -80,9 +93,11 @@ void mapView(TString name = "baconTest")
     scan->cd(i + 1);
     SipmMapRZ[i]->Draw("contz");
   }
+  scan->Print(".pdf");
   
-  TCanvas *edcan = new TCanvas("SipmEDep", "SipmEDep");
+  ctitle.Form("SipmEDep%s",name.Data());
   gStyle->SetOptLogy();
+  TCanvas *edcan = new TCanvas(ctitle,ctitle);
   edcan->Divide(2, 3);
   for (int i = 0; i < 6; ++i)
   {
@@ -90,6 +105,7 @@ void mapView(TString name = "baconTest")
     SipmMapEDep[i]->GetXaxis()->SetTitle(" photon energy (eV)  ");
     SipmMapEDep[i]->Draw("");
   }
+  edcan->Print(".pdf");
 
   fout->ls();
   fout->Write();
