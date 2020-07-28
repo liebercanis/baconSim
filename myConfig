@@ -1,4 +1,0 @@
-#!/bin/bash
-export G4WORKDIR=/global/project/$MGOLD/shifter/baconSim
-export MGDODIR=/global/project/projectdirs/m2676/users/mgold/shifter/MGDO
-echo "configure --enable-streamers --enable-mjdb --enable-majorana --enable-tam --prefix=$MGOLD/shifter/MGDO --exec-prefix=$MGOLD/shifter/MGDO -with-mgdo=$MGDODIR"
