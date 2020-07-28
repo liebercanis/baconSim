@@ -126,19 +126,24 @@ void MGGeneratorLGNDLiquidArgon::DirectionDecider()
 void MGGeneratorLGNDLiquidArgon::EnergyDecider()
 {
   fCurrentEnergy = 0;
+  G4double waveL = 0;
+
   if (fParticleType == "opticalphoton")
   {
     //Gaussian
-    G4double waveL = fPhotonMean +
-                     fPhotonSigma * sqrt(-2.0 * log(G4UniformRand())) * cos(2.0 * pi * G4UniformRand());
-    waveL *= nm;
+    waveL = G4RandGauss::shoot(fPhotonMean, fPhotonSigma);
     //Some materials don't have optical properties bellow 115*nm
     if (waveL < 115 * nm)
+    {
+      MGLog(routine) << " photon wavelength was  " << waveL / nm << " set to 115 nm " << endlog;
       waveL = 115 * nm;
+    }
     fCurrentEnergy = LambdaE / waveL;
   }
   else
     MGLog(error) << "Warned fCurrentEnergy is not set " << endlog;
+
+  MGLog(debugging) << " photon wavelength " << waveL / nm << " nm  energy " << fCurrentEnergy / eV << " eV " << endlog;
 }
 
 void MGGeneratorLGNDLiquidArgon::PositionDecider()
@@ -152,11 +157,9 @@ void MGGeneratorLGNDLiquidArgon::PositionDecider()
 
   do
   {
-    //pdf_r = (2/R^2)*r
-    //G4double r = fRadiusMax*std::sqrt(G4UniformRand());
-    G4double rand = G4UniformRand();
     //G4double r = (fRadiusMax-fRadiusMin)*rand*rand+fRadiusMin;
-    // fixed by mgold
+    /** fixed by mgold  PDF = (2/R^2)*r **/
+    G4double rand = G4UniformRand();
     G4double c2 = pow(fRadiusMax, 2.) - pow(fRadiusMin, 2.);
     G4double r = sqrt(c2 * rand + pow(fRadiusMin, 2.));
     G4double theta = 2 * pi * G4UniformRand();
@@ -313,7 +316,7 @@ void MGGeneratorLGNDLiquidArgon::GeneratePrimaryVertex(G4Event *event)
                    << " \n fCenterVector r= " << fCenterVector.perp() << " phi= " << fCenterVector.phi() << " z= " << fCenterVector.z()
                    << " \n fNParticles " << fNParticles
                    << " \n photons with :  \n fPhotonMean   " << fPhotonMean / nm
-                   << "  fPhotonSigma  " << fPhotonSigma / nm << endlog;
+                   << "  fPhotonSigma  " << fPhotonSigma / nm << " nm " << endlog;
   }
 
   fParticleGun->SetParticlePolarization(G4ThreeVector(2 * G4UniformRand() - 1, 2 * G4UniformRand() - 1, 2 * G4UniformRand() - 1));
