@@ -27,7 +27,7 @@ MGBINLIBDEPS = $(foreach package,$(MGTARGETDEPS),$(MGTMPDIR)/$(package)/lib$(pac
 MGBINLIBDIRS = $(foreach package,$(MGTARGETDEPS),-L$(MGTMPDIR)/$(package))
 MGBINLIBS = $(G4LIBDIR)/lib$(name).$(MGLIBEXT) $(MGBINLIBDEPS) $(filter-out $(MGLIBS), $(LDLIBS)) 
 MGBINDEPS = $(patsubst %, $(MGTMPDIR)/%.d, $(MGTARGETS))
-MGBINLIBS += -L$(MAGEDIR)/io/obj/ -lLegendRoot
+MGBINLIBS += -L$(MAGEDIR)/io/obj/ -lBaconSim
 
 ifndef GLOBALLIBS
   ifneq ($(G4INCLUDE_EXEC),1)
