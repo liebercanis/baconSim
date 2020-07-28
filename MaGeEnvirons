@@ -1,4 +1,5 @@
 BLAH=BLAHBLAH
+BACONSIM=/global/project/projectdirs/m2676/users/mgold/shifter/baconSim
 CORISHIFTER=/global/project/projectdirs/m2676/users/mgold/shifter/
 MGDODIR=/global/project/projectdirs/m2676/users/mgold/shifter/MGDO
 ALT_LINKER=/global/common/cori/software/altd/2.0/bin/ld
