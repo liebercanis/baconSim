@@ -1,0 +1,24 @@
+#!/bin/bash
+export BACONSIM=/global/project/projectdirs/m2676/users/mgold/shifter/baconSim
+export CORISHIFTER=/global/project/projectdirs/m2676/users/mgold/shifter/
+export MGDODIR=/global/project/projectdirs/m2676/users/mgold/shifter/MGDO
+export ALT_LINKER=/global/common/cori/software/altd/2.0/bin/ld
+export USER=mgold
+export LD_LIBRARY_PATH=/global/project/projectdirs/m2676/users/mgold/shifter/MGDO/lib:/opt/root/lib:/usr/lib64:/opt/clhep/lib:/opt/geant4/lib64:/opt/geant4/lib64:/opt/clhep/lib:/opt/hdf5/lib:$BACONSIM/lib
+export CSCRATCH=/global/cscratch1/sd/mgold
+export MGOLD=/global/homes/m/mgold/legend/users/mgold
+export PATH=/global/project/projectdirs/m2676/users/mgold/shifter/MGDO/bin:/opt/root/bin:/opt/clhep/bin:/global/project/projectdirs/m2676/users/mgold/shifter/baconSim/bin/Linux-g++:/global/project/projectdirs/m2676/users/mgold/shifter/baconSim/bin/Linux-g++:/opt/geant4/bin:/opt/dcraw/bin:/opt/geant4/bin:/opt/clhep/bin:/opt/hdf5/bin:/opt/nodejs/bin:/opt/anaconda3/bin:/opt/julia/bin:/opt/julia-1.3/bin:/opt/julia-1.2/bin:/opt/julia-1.1/bin:/opt/cmake/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/udiImage/bin
+export MAIL=/var/mail/mgold
+export MGGENERATORDATA=/global/project/projectdirs/m2676/users/mgold/shifter/baconSim/generators/data
+export LDMSD_PLUGIN_LIBPATH=/opt/ovis/lib64/ovis-ldms
+export G4LIB_BUILD_SHARED=1
+export MAGEDIR=/global/project/projectdirs/m2676/users/mgold/shifter/baconSim
+export __INTEL_PRE_FFLAGS=-Qlocation,ld,/global/common/cori/software/altd/2.0/bin
+export HOME=/global/homes/m/mgold
+export DYLD_LIBRARY_PATH=/opt/root/lib:$BACONSIM/lib
+export BASH_ENV=/global/homes/m/mgold/.bashrc
+export LOGNAME=mgold
+export G4WORKDIR=/global/project/projectdirs/m2676/users/mgold/shifter/baconSim
+export G4INCLDATA=/opt/geant4/share/Geant4-10.5.1/data/G4INCL1.0
+export SCRATCH=/global/cscratch1/sd/mgold
+export CRAY_LD_LIBRARY_PATH=/global/common/cori_cle7/software/darshan/3.1.7/lib:/opt/cray/pe/mpt/7.7.6/gni/mpich-cray/16.0/lib:/opt/cray/pe/mpt/7.7.6/gni/mpich-intel/16.0/lib:/opt/cray/rca/2.2.20-7.0.0.1_4.39__g8e3fb5b.ari/lib64:/opt/cray/alps/6.6.50-7.0.0.1_3.41__g962f7108.ari/lib64:/opt/cray/xpmem/2.2.17-7.0.0.1_3.25__g7acee3a.ari/lib64:/opt/cray/dmapp/7.1.1-7.0.0.1_5.26__g25e5077.ari/lib64:/opt/cray/pe/pmi/5.0.14/lib64:/opt/cray/ugni/6.0.14.0-7.0.0.1_7.32__ge78e5b0.ari/lib64:/opt/cray/udreg/2.3.2-7.0.0.1_4.28__g8175d3d.ari/lib64:/opt/cray/pe/libsci/19.02.1/INTEL/16.0/x86_64/lib
