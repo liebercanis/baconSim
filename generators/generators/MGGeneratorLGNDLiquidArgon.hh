@@ -68,7 +68,7 @@
 #define _MGGENERATORLGNDLIQUIDARGON_HH
 
 //---------------------------------------------------------------------------//
-
+#include <CLHEP/Units/SystemOfUnits.h>
 #include "globals.hh"
 #include "G4ThreeVector.hh"
 #include "G4LogicalVolume.hh"
@@ -84,6 +84,8 @@ class G4Event;
 class G4Messenger;
 class G4ParticleGun;
 class G4Run;
+
+using namespace CLHEP;
 
 class MGGeneratorLGNDLiquidArgon : public MGVGenerator
 {
@@ -115,14 +117,28 @@ public:
   void SetHeight(G4double h)
   {
     fZ = h;
-    MGLog(routine) << " MGGeneratorLGNDLiquidArgon setting fZ  " << fZ << endlog;
+    MGLog(routine) << " setting fZ  " << fZ << endlog;
   }
-  void SetCenterVector(G4ThreeVector vec) { fCenterVector = vec; }
+  void SetCenterVector(G4ThreeVector vec)
+  {
+    fCenterVector = vec;
+    MGLog(routine) << " setting fCenterVector ( " << vec.x() << " , " << vec.y() << " , " << vec.z() << " )" << endlog;
+  }
   void SetParticleType(G4String str) { fParticleType = str; }
-  void SetParticleEnergy(G4double nrg) { fEnergy = nrg; }
+  void SetPhotonMean(G4double v)
+  {
+    fPhotonMean = v;
+    MGLog(routine) << " setting fPhotonMean " << fPhotonMean / nm << " nm " << endlog;
+  }
+  void SetPhotonSigma(G4double v)
+  {
+    fPhotonSigma = v;
+    MGLog(routine) << " setting fPhotonSigma " << fPhotonSigma / nm << " nm" << endlog;
+  }
+
   void SetBinWidth(G4double width)
   {
-    MGLog(routine) << " MGGeneratorLGNDLiquidArgon setting bin width  " << width << endlog;
+    MGLog(routine) << " setting bin width  " << width << endlog;
     fBinWidth = width;
   }
   void SetNParticles(G4double N) { fNParticles = N; }
@@ -141,7 +157,8 @@ private:
   G4double fBinWidth;
   G4double fNParticles;
   G4ThreeVector fCenterVector;
-  G4String fParticleType = "opticalphoton";
-  G4double fEnergy;
+  G4String fParticleType;
+  G4double fPhotonMean;
+  G4double fPhotonSigma;
 };
 #endif

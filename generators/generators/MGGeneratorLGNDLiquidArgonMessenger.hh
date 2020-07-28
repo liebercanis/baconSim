@@ -29,7 +29,7 @@
 *
 *---------------------------------------------------------------------------//
 */
-// 
+//
 // --------------------------------------------------------------------------//
 /** 
 * AUTHOR: Neil McFadden
@@ -46,12 +46,12 @@
 #define _MGGENERATORLGNDLIQUIDARGONMESSENGER_HH
 
 //---------------------------------------------------------------------------//
-
+#include <CLHEP/Units/SystemOfUnits.h>
 #include "G4UImessenger.hh"
 #include "G4UIcmdWithADoubleAndUnit.hh"
 #include "G4UIcmdWith3VectorAndUnit.hh"
 #include "G4UIcmdWithADouble.hh"
-
+using namespace CLHEP;
 //---------------------------------------------------------------------------//
 
 class G4UIdirectory;
@@ -61,27 +61,25 @@ class MGGeneratorLGNDLiquidArgon;
 class MGGeneratorLGNDLiquidArgonMessenger : public G4UImessenger
 {
 public:
-	MGGeneratorLGNDLiquidArgonMessenger(MGGeneratorLGNDLiquidArgon *generator);
-	MGGeneratorLGNDLiquidArgonMessenger(const MGGeneratorLGNDLiquidArgonMessenger &);
-	~MGGeneratorLGNDLiquidArgonMessenger();
+  MGGeneratorLGNDLiquidArgonMessenger(MGGeneratorLGNDLiquidArgon *generator);
+  MGGeneratorLGNDLiquidArgonMessenger(const MGGeneratorLGNDLiquidArgonMessenger &);
+  ~MGGeneratorLGNDLiquidArgonMessenger();
 
-	void SetNewValue(G4UIcommand *cmd, G4String newValue);
+  void SetNewValue(G4UIcommand *cmd, G4String newValue);
 
 protected:
-
 private:
-	MGGeneratorLGNDLiquidArgon	*fLiquidArgonGenerator;
-	G4UIdirectory	*fLiquidArgonDirectory;
+  MGGeneratorLGNDLiquidArgon *fLiquidArgonGenerator;
+  G4UIdirectory *fLiquidArgonDirectory;
   G4UIcmdWithADoubleAndUnit *fLiquidArgonSetRadius;
   G4UIcmdWithADoubleAndUnit *fLiquidArgonSetRadiusMin;
   G4UIcmdWithADoubleAndUnit *fLiquidArgonSetHeight;
   G4UIcmdWith3VectorAndUnit *fLiquidArgonSetCenterVector;
   G4UIcmdWithAString *fLiquidArgonSetParticle;
-  G4UIcmdWithADoubleAndUnit *fLiquidArgonSetEnergy;
+  G4UIcmdWithADoubleAndUnit *fLiquidArgonSetMean;
+  G4UIcmdWithADoubleAndUnit *fLiquidArgonSetSigma;
   G4UIcmdWithADoubleAndUnit *fLiquidArgonSetBinWidth;
-  G4UIcmdWithADouble        *fLiquidArgonSetNParticles;
-	//G4UIcmdWithAString	*fSetSurfaceVolumeCmd;
-
+  G4UIcmdWithADouble *fLiquidArgonSetNParticles;
+  //G4UIcmdWithAString	*fSetSurfaceVolumeCmd;
 };
 #endif
-

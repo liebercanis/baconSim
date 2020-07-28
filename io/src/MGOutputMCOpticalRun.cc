@@ -907,7 +907,7 @@ void MGOutputMCOpticalRun::RootSteppingAction(const G4Step *step)
 
   if (sensVolID == 100 && eDep > 0)
   {
-    MGLog(routine) << " edep " << eDep << " " << eDep / eV << endlog;
+    MGLog(debugging) << " eDep " << eDep / eV << "  eV " << endlog;
 
     //Fill histograms is hit is found
     oMap->getMap("PMTMap0")->fill(eDep, fPrimX, fPrimY, fPrimZ);

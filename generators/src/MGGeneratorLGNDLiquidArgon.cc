@@ -90,9 +90,11 @@ MGGeneratorLGNDLiquidArgon::MGGeneratorLGNDLiquidArgon()
   fZ0 = 0; // set to bottom of cryostat
   fBinWidth = 0;
   fNParticles = 1;
-  fParticleType = "opticalphoton";
-  fEnergy = 0;
-  MGLog(routine) << " MGGeneratorLGNDLiquidArgon fZ  " << fZ << endlog;
+  fParticleType = G4String("opticalphoton");
+  fPhotonMean = 128.0 * nm;
+  fPhotonSigma = 2.929 * nm;
+  MGLog(routine) << " fPhotonMean   " << fPhotonMean / nm
+                 << " fPhotonSigma  " << fPhotonSigma / nm << endlog;
 }
 
 MGGeneratorLGNDLiquidArgon::MGGeneratorLGNDLiquidArgon(const MGGeneratorLGNDLiquidArgon &other) : MGVGenerator(other)
@@ -123,24 +125,20 @@ void MGGeneratorLGNDLiquidArgon::DirectionDecider()
 
 void MGGeneratorLGNDLiquidArgon::EnergyDecider()
 {
+  fCurrentEnergy = 0;
   if (fParticleType == "opticalphoton")
   {
-    G4double waveL = 0;                //from 115 nm to 136 nm
-    double sigma = 2.929, mean = 128.; //nm units get added later
-    //BoxMuller transform
-    waveL = (mean + sigma * sqrt(-2.0 * log(G4UniformRand())) * cos(2 * pi * G4UniformRand())) * nm;
+    //Gaussian
+    G4double waveL = fPhotonMean +
+                     fPhotonSigma * sqrt(-2.0 * log(G4UniformRand())) * cos(2.0 * pi * G4UniformRand());
+    waveL *= nm;
     //Some materials don't have optical properties bellow 115*nm
     if (waveL < 115 * nm)
       waveL = 115 * nm;
     fCurrentEnergy = LambdaE / waveL;
   }
-  else if (fEnergy > 0)
-  {
-    //seems a bit redundant do do this here, but maybe you want to set a distribution or something more fancier-ish
-    fCurrentEnergy = fEnergy;
-  }
   else
-    MGLog(error) << "Warned particle energy is <= 0" << endlog;
+    MGLog(error) << "Warned fCurrentEnergy is not set " << endlog;
 }
 
 void MGGeneratorLGNDLiquidArgon::PositionDecider()
@@ -299,6 +297,7 @@ void MGGeneratorLGNDLiquidArgon::GeneratePrimaryVertex(G4Event *event)
   }
 
   if (event->GetEventID() == 0)
+  {
     MGLog(routine) << " all in mm:  "
                    << " \n sipmDimX " << sipmDimX
                    << " \n sipmDimY " << sipmDimY
@@ -313,7 +312,9 @@ void MGGeneratorLGNDLiquidArgon::GeneratePrimaryVertex(G4Event *event)
                    << " \n Z max  " << fZ + fCenterVector.z() + fBinWidth
                    << " \n fCenterVector r= " << fCenterVector.perp() << " phi= " << fCenterVector.phi() << " z= " << fCenterVector.z()
                    << " \n fNParticles " << fNParticles
-                   << endlog;
+                   << " \n photons with :  \n fPhotonMean   " << fPhotonMean / nm
+                   << "  fPhotonSigma  " << fPhotonSigma / nm << endlog;
+  }
 
   fParticleGun->SetParticlePolarization(G4ThreeVector(2 * G4UniformRand() - 1, 2 * G4UniformRand() - 1, 2 * G4UniformRand() - 1));
 

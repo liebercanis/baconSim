@@ -104,11 +104,17 @@ MGGeneratorLGNDLiquidArgonMessenger::MGGeneratorLGNDLiquidArgonMessenger(MGGener
   fLiquidArgonSetParticle = new G4UIcmdWithAString("/MG/generator/LGNDLiquidArgon/SetParticle", this);
   fLiquidArgonSetParticle->SetGuidance("Define particle type that will be generated in LAr");
 
-  fLiquidArgonSetEnergy = new G4UIcmdWithADoubleAndUnit("/MG/generator/LGNDLiquidArgon/SetEnergy", this);
-  fLiquidArgonSetEnergy->SetGuidance("Define energy to Generate points inside a Cylidrical Croystat that has diameter = height");
-  fLiquidArgonSetEnergy->SetDefaultUnit("MeV");
-  fLiquidArgonSetEnergy->SetUnitCategory("Energy");
-  fLiquidArgonSetEnergy->SetUnitCandidates("eV KeV MeV GeV TeV");
+  fLiquidArgonSetMean = new G4UIcmdWithADoubleAndUnit("/MG/generator/LGNDLiquidArgon/SetPhotonMean", this);
+  fLiquidArgonSetMean->SetGuidance("Define photon wavelength Gaussian mean");
+  fLiquidArgonSetMean->SetDefaultUnit("nm");
+  fLiquidArgonSetMean->SetUnitCategory("Length");
+  fLiquidArgonSetMean->SetUnitCandidates("nm micron");
+
+  fLiquidArgonSetSigma = new G4UIcmdWithADoubleAndUnit("/MG/generator/LGNDLiquidArgon/SetPhotonSigma", this);
+  fLiquidArgonSetSigma->SetGuidance("Define photon wavelength Gaussian sigma");
+  fLiquidArgonSetSigma->SetDefaultUnit("nm");
+  fLiquidArgonSetSigma->SetUnitCategory("length");
+  fLiquidArgonSetSigma->SetUnitCandidates("nm micron");
 }
 
 //---------------------------------------------------------------------------//
@@ -127,7 +133,8 @@ MGGeneratorLGNDLiquidArgonMessenger::~MGGeneratorLGNDLiquidArgonMessenger()
   delete fLiquidArgonSetRadiusMin;
   delete fLiquidArgonSetHeight;
   delete fLiquidArgonSetParticle;
-  delete fLiquidArgonSetEnergy;
+  delete fLiquidArgonSetMean;
+  delete fLiquidArgonSetSigma;
   delete fLiquidArgonSetCenterVector;
   delete fLiquidArgonSetBinWidth;
   delete fLiquidArgonSetNParticles;
@@ -165,8 +172,12 @@ void MGGeneratorLGNDLiquidArgonMessenger::SetNewValue(G4UIcommand *cmd, G4String
   {
     fLiquidArgonGenerator->SetParticleType(str);
   }
-  else if (cmd == fLiquidArgonSetEnergy)
+  else if (cmd == fLiquidArgonSetMean)
   {
-    fLiquidArgonGenerator->SetParticleEnergy(fLiquidArgonSetEnergy->GetNewDoubleValue(str));
+    fLiquidArgonGenerator->SetPhotonMean(fLiquidArgonSetMean->GetNewDoubleValue(str));
+  }
+  else if (cmd == fLiquidArgonSetSigma)
+  {
+    fLiquidArgonGenerator->SetPhotonSigma(fLiquidArgonSetSigma->GetNewDoubleValue(str));
   }
 }
