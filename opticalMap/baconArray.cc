@@ -21,6 +21,7 @@ int main(int argc, char *argv[])
   {
     //cout<<"Setting Z to "<<z<<"mm...Range is from 300mm to -300mm , fileName is "<<fileName+ std::to_string(i) +string(".mac")<<endl;
     outputFile.open(fileName + to_string(i) + string(".mac"));
+    outputFile << "/MG/manager/mglog routine" << endl;
     outputFile << "/MG/manager/seedWithUUID" << endl;
     outputFile << "/MG/processes/realm DarkMatter" << endl;
     outputFile << "/MG/processes/lowenergy false" << endl;
