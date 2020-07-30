@@ -41,7 +41,7 @@ BACON_Baseline::BACON_Baseline(G4String version) : MGGeometryDetector(version),
   //fCryoHeight = 22.5*inch;
   fCryoHeight = 23 * inch; //24.5*inch;
   fDelta = 0.000001 * m;
-  fSipmDimX = 300.0 * mm;
+  fSipmDimX = 3.0 * mm;
   fSipmDimY = 3.0 * mm;
 }
 
