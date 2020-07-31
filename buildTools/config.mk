@@ -21,8 +21,8 @@ srcdir = .
 subdirs = @subdirs@
 top_srcdir = ..
 
-prefix = /usr/local
-exec_prefix = ${prefix}
+prefix = /home/gold/bacon/baconSim
+exec_prefix = /home/gold/bacon/baconSim
 
 bindir = ${exec_prefix}/bin
 sbindir = ${exec_prefix}/sbin
@@ -52,15 +52,15 @@ GREP = /usr/bin/grep
 SED = /usr/bin/sed
 
 
-MAGEDIR=/home/nmcfadden/XenonDoping
+MAGEDIR=/home/gold/bacon/baconSim
 
-CLHEP_BASE_DIR = /usr/local
-CLHEP_INCLUDE_DIR = /usr/local/include
-CLHEP_LIB_DIR = /usr/local/lib
+CLHEP_BASE_DIR = /home/admin
+CLHEP_INCLUDE_DIR = /home/admin/CLHEP_BUILD
+CLHEP_LIB_DIR = /home/admin/CLHEP_BUILD/lib
 
-G4INSTALL = /usr/local/share/Geant4-10.4.0/geant4make
-G4INCLUDE = /usr/local/include/Geant4
-G4LIB = /usr/local/lib64/Geant4-10.4.0
+G4INSTALL = /home/admin/geant4.10.04
+G4INCLUDE = /home/admin/geant4.10.04/this_is_a_deliberate_dummy_path
+G4LIB = /home/admin/geant4.10.04-build/BuildProducts/lib64
 G4SYSTEM = Linux-g++
 
 #list of packages to exclude from the build
@@ -73,7 +73,7 @@ PACKAGES := $(subst $(MAGEDIR)/,, $(PACKAGES))
 PACKAGES := $(subst /,, $(PACKAGES))
 PACKAGES := $(filter-out $(PKG_SKIP), $(PACKAGES))
 
-G4WORKDIR=/home/nmcfadden/XenonDoping
+G4WORKDIR=/home/gold/bacon/baconSim
 G4SYSTEM=Linux-g++
 MGTMPDIR=$(G4WORKDIR)/tmp/$(G4SYSTEM)
 
@@ -86,15 +86,15 @@ CPPFLAGS += -O2 -fPIC $(MGCPPFLAGS)
 
 # ROOT
 CPPFLAGS += -pthread -std=c++11 -m64 -I/usr/local/root/include 
-EXTRALIBS += -L/usr/local/root/lib -lCore -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lMultiProc -pthread -lm -ldl -rdynamic 
+EXTRALIBS += -L/usr/local/root/lib -lCore -lImt -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lROOTDataFrame -lROOTVecOps -lTree -lTreePlayer -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lMultiProc -pthread -lm -ldl -rdynamic 
 
 # MGDO
-CPPFLAGS += -I/home/nmcfadden/MGDO/install/include/mgdo
-EXTRALIBS += -L/home/nmcfadden/MGDO/install/lib -lMGDOBase -lMGDOTransforms -lMGDORoot -lMGDOGerda
+CPPFLAGS += -I/home/admin/MGDO/Base -I/home/admin/MGDO/Root -I/home/admin/MGDO/Transforms  -I/home/admin/MGDO/Gerda
+EXTRALIBS += -L/home/admin/MGDO/lib -lMGDOBase -lMGDORoot -lMGDOTransforms -lMGDOGerda
 
 # GDML
-CPPFLAGS += -DMG_NO_G4GDML
-EXTRALIBS +=  
+CPPFLAGS += -I/usr/include
+EXTRALIBS += -L/home/admin/geant4.10.04-build/BuildProducts/lib64/Linux-g++ -L/usr/lib -lG4persistency -lxerces-c
 
 CPPFLAGS += 
 LDFLAGS += 

@@ -276,7 +276,7 @@ void MGGeneratorLGNDLiquidArgon::GeneratePrimaryVertex(G4Event *event)
 
   if (fBinWidth == 0)
   {
-    fBinWidth = 2 * cryoHalfZ - fCenterVector.z();
+    fBinWidth = 2 * cryoHalfZ;
     MGLog(routine) << " WARNING resetting fBinWdith to   " << fBinWidth << endl;
   }
 
@@ -286,7 +286,7 @@ void MGGeneratorLGNDLiquidArgon::GeneratePrimaryVertex(G4Event *event)
   if (fRadiusMax == 0)
   {
     fRadiusMax = cryoR;
-    MGLog(routine) << " WARGNING resetting fRadiumMax to   " << fRadiusMax << endl;
+    MGLog(routine) << " WARNING resetting fRadiumMax to   " << fRadiusMax << endl;
   }
   if (zMax > cryoHalfZ || fBinWidth == 0)
   {
@@ -296,7 +296,7 @@ void MGGeneratorLGNDLiquidArgon::GeneratePrimaryVertex(G4Event *event)
   if (zMin < -cryoHalfZ)
   {
     fZ = -1.0 * (cryoHalfZ + fCenterVector.z());
-    MGLog(routine) << " cryoHalfZ " << cryoHalfZ << " fCenterVector.z() " << fCenterVector.z() << " WARNING <zMin resetting fZ   " << fZ << endl;
+    MGLog(routine) << " WARNING resetting fZ cryoHalfZ " << cryoHalfZ << " fCenterVector.z() " << fCenterVector.z() << " WARNING <zMin resetting fZ   " << fZ << endl;
   }
 
   if (event->GetEventID() == 0)
