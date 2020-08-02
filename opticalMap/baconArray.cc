@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
   if (argc > 1)
     nevents = atoi(argv[1]);
   ofstream outputFile;
-  int nparticles = 1000000;
+  int nparticles = 10000;
   double mean = 128;
   double sigma = 2.929;
   string fileName = "baconMap";
