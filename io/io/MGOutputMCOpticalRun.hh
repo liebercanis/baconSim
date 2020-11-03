@@ -32,7 +32,6 @@
 #include "TH2D.h"
 #include "TH3D.h"
 
-
 #include "io/MGOutputRoot.hh"
 #include "MGTMCEventHeader.hh"
 #include "MGTMCEventSteps.hh"
@@ -40,8 +39,6 @@
 #include "G4VPhysicalVolume.hh"
 #include "obj/TLArEvent.hxx"
 #include "obj/TOMap.hxx"
-
-
 
 class G4Event;
 class G4Step;
@@ -112,14 +109,17 @@ public:
   virtual void DefineSchema();
   virtual void EndOfEventAction(const G4Event *event);
   virtual void EndOfRunAction();
-  virtual void RootSteppingAction(const G4Step* step);
+  virtual void RootSteppingAction(const G4Step *step);
   virtual void WriteEvent();
   virtual void WriteFile();
-  virtual void WritePartialEvent(const G4Event*) { WriteEvent(); }
- 
+  virtual void WritePartialEvent(const G4Event *) { WriteEvent(); }
+
   /// Clear event steps and event header.
-  virtual inline void ResetPartialEvent(const G4Event*) 
-    { fMCEventSteps->ClearSteps(); fMCEventHeader->ClearEnergies(); }
+  virtual inline void ResetPartialEvent(const G4Event *)
+  {
+    fMCEventSteps->ClearSteps();
+    fMCEventHeader->ClearEnergies();
+  }
 
   // set and get methods:
 
@@ -127,7 +127,7 @@ public:
   virtual inline void SetRunID(uint64_t runID) { fRunID = runID; }
 
   /// Set Max number of steps (default 5000)
-  virtual inline void SetNSteps(uint64_t nsteps) {fNSteps = nsteps; }
+  virtual inline void SetNSteps(uint64_t nsteps) { fNSteps = nsteps; }
 
   /// Set run description.
   virtual inline void SetDescription(std::string description) { fRunDescription = description; }
@@ -144,32 +144,36 @@ public:
   /// Set whether to kill all neutron tracks outside sensitive volume after one step.
   virtual inline void SetKillNeutrons(G4bool stat) { fKillNeutrons = stat; }
 
-  /// Set whether to stop nuclei outside sensitive volume, but don't kill them. This allows them to decay. 
+  /// Set whether to stop nuclei outside sensitive volume, but don't kill them. This allows them to decay.
   virtual inline void SetStopNuclei(G4bool blah) { fStopNuclei = blah; }
 
-  virtual inline void SetKillAll(G4bool bleh)    {fKillAll = bleh; }
+  virtual inline void SetKillAll(G4bool bleh) { fKillAll = bleh; }
 
   /// Set whether to write all steps in event.
-  virtual inline void SetWriteAllSteps(G4bool val) {fWriteAllSteps = val;}
+  virtual inline void SetWriteAllSteps(G4bool val) { fWriteAllSteps = val; }
 
   /// Set whether to write all steps in events that deposit energy in sensitive volumes.
-  virtual inline void SetWriteAllStepsInEventsThatDepositEnergy(G4bool val)     
-      {fWriteAllStepsInEventsThatDepositEnergy = val;}
+  virtual inline void SetWriteAllStepsInEventsThatDepositEnergy(G4bool val)
+  {
+    fWriteAllStepsInEventsThatDepositEnergy = val;
+  }
 
   /// Set whether to write all steps in sensitive volumes
   virtual inline void SetWriteAllSensitiveSteps(G4bool val)
-  {fWriteAllSensitiveSteps = val;}
+  {
+    fWriteAllSensitiveSteps = val;
+  }
 
   /// Set whether to print surface areas.
   virtual inline void SetAreSurfaceAreasPrinted(G4bool val) { fAreSurfaceAreasPrinted = val; }
 
   /// Return sensitive ID of given physical volume.
-  virtual int GetSensitiveIDofPhysicalVolume(G4VPhysicalVolume* physVol);
+  virtual int GetSensitiveIDofPhysicalVolume(G4VPhysicalVolume *physVol);
 
   /// Return pointer to MGTMCRun object.
-  virtual inline MGTMCRun* GetMCRun() const { return fMCOpticalRun; }
-  
-  /// Return pointer to MGTMCEventHeader. 
+  virtual inline MGTMCRun *GetMCRun() const { return fMCOpticalRun; }
+
+  /// Return pointer to MGTMCEventHeader.
   virtual inline MGTMCEventHeader *GetMCEventHeader() { return fMCEventHeader; }
 
   /// Return pointer to MGTMCEventSteps event step data.
@@ -182,70 +186,65 @@ public:
   // Only messenger calls will override
 
   /// Return MaGe particle ID.
-  static int GetMaGeParticleID(G4ParticleDefinition* particle);
+  static int GetMaGeParticleID(G4ParticleDefinition *particle);
 
   /// Return whether particle is a germanium nucleus.
   static bool MaGeParticleIDIsGeNucleus(int pid);
 
-
-
   //Add root histograms for optical maps
-  TDirectory *opticalDir;
+  static TDirectory *opticalDir;
   TOMap *oMap;
   G4Navigator *navigator;
-  TLArEvent* fLArEvent;
-  TLArHit* fLArHit;
-
-
+  TLArEvent *fLArEvent;
+  TLArHit *fLArHit;
 
 private:
-  MGTMCRun          *fMCOpticalRun;             // MGDO encapsulation of run-level info 
-  MGTMCEventHeader  *fMCEventHeader;     // MGDO encapsulation of event-level info
-  MGTMCEventSteps   *fMCEventSteps;      // MGDO encapsulation of steps 
-  MGTMCEventSteps   *fMCEventPrimaries;  // MGDO encapsulation of steps 
-  
+  MGTMCRun *fMCOpticalRun;            // MGDO encapsulation of run-level info
+  MGTMCEventHeader *fMCEventHeader;   // MGDO encapsulation of event-level info
+  MGTMCEventSteps *fMCEventSteps;     // MGDO encapsulation of steps
+  MGTMCEventSteps *fMCEventPrimaries; // MGDO encapsulation of steps
+
   static const G4double LambdaE;
 
-  G4int       fRunID;
-  G4int       fNSteps;
-  G4int       fNevents;
-  G4String    fRunDescription;
+  G4int fRunID;
+  G4int fNSteps;
+  G4int fNevents;
+  G4String fRunDescription;
 
-  G4int       fEventCounter;
-  G4int       fPastTrackPrimaryID;
-  G4double    fPrimX;
-  G4double    fPrimY;
-  G4double    fPrimZ;
-  G4bool      fWriteFlag;
-  G4bool      fPrimaryWriteFlag;
-  G4bool      fWriteAllSteps;          // Write steps in all volumes.
-  G4bool      fWriteAllStepsInEventsThatDepositEnergy; // Write steps in all volumes for those events that deposit non-zero energy
-  G4bool      fWriteAllSensitiveSteps; // Write steps in senstive volumes
+  G4int fEventCounter;
+  G4int fPastTrackPrimaryID;
+  G4double fPrimX;
+  G4double fPrimY;
+  G4double fPrimZ;
+  G4bool fWriteFlag;
+  G4bool fPrimaryWriteFlag;
+  G4bool fWriteAllSteps;                          // Write steps in all volumes.
+  G4bool fWriteAllStepsInEventsThatDepositEnergy; // Write steps in all volumes for those events that deposit non-zero energy
+  G4bool fWriteAllSensitiveSteps;                 // Write steps in senstive volumes
 
-  G4bool      fAreSurfaceAreasPrinted; // print surface areas of components
+  G4bool fAreSurfaceAreasPrinted; // print surface areas of components
 
   G4bool fWriteRandGenState;
 
-  G4bool      fKillAlphas;             // Kill all alpha tracks outside sensitive volume after one step.
-  G4bool      fKillBetas;              // Kill all beta tracks outside sensitive volume after one step.
-  G4bool      fKillGammas;             // Kill all gamma tracks outside sensitive volume after one step.
-  G4bool      fKillNeutrons;           // Kill all neutron tracks outside sensitive volume after one step.
-  G4bool      fStopNuclei;             // Stop nuclei outside sensitive volume, but don't kill them. This allows them to decay.
-  G4bool      fKillAll;
-  
+  G4bool fKillAlphas;   // Kill all alpha tracks outside sensitive volume after one step.
+  G4bool fKillBetas;    // Kill all beta tracks outside sensitive volume after one step.
+  G4bool fKillGammas;   // Kill all gamma tracks outside sensitive volume after one step.
+  G4bool fKillNeutrons; // Kill all neutron tracks outside sensitive volume after one step.
+  G4bool fStopNuclei;   // Stop nuclei outside sensitive volume, but don't kill them. This allows them to decay.
+  G4bool fKillAll;
+
   //Variables for optical map
-  G4double    gridSpacing, maxX ,minX,maxY,minY,maxZ,minZ,minR,maxR;
-  G4double    QE;
+  G4double gridSpacing, maxX, minX, maxY, minY, maxZ, minZ, minR, maxR;
+  G4double QE;
   G4int nbinsX;
   G4int nbinsY;
   G4int nbinsZ;
   G4int nbinsR;
 
-
-  G4UImessenger *fMessenger; 
+  G4UImessenger *fMessenger;
 
   // a map of physical volume pointers to sensitive ids:
-  std::map<G4VPhysicalVolume*, int> fSensitiveIDOfPhysicalVol;
+  std::map<G4VPhysicalVolume *, int> fSensitiveIDOfPhysicalVol;
 
   // Sensitive volume name - ID pairs are taken from the list stored in fMCOpticalRun
   // Can be set e.g. using /MG/io/MCOpticalRun/AddSensitiveVolnameID [volname] [ID]
@@ -253,27 +252,40 @@ private:
   // for specifying sentivie volume name - ID pairs:
   // kClassic: used historically by MJ. Deprecated.
   // kLabelID: look for volumes named [label][ID].
-  // kAskGeom: ask the geometry class using the MGVGeometrySensVolList interface. 
+  // kAskGeom: ask the geometry class using the MGVGeometrySensVolList interface.
   //   Note: only valid for geometry classes deriving from MGVGeometrySensVolList!
   // kFile: specify a file containing a list of volume name - ID pairs, like this:
   //   # comments starting with "#" less than 1024 chars in length are allowed
   //   volumeName1  1022
   //   volumeName2  2343
   //   ...
-  // kManual: the user will specify the sensitive volumes only manually 
-  //   (e.g. via the macro command given above). 
-  enum ESensitiveIDLabelScheme { kClassic, kLabelID, kAskGeom, kFile, kManual};
-  ESensitiveIDLabelScheme fSensitiveIDLabelScheme; 
+  // kManual: the user will specify the sensitive volumes only manually
+  //   (e.g. via the macro command given above).
+  enum ESensitiveIDLabelScheme
+  {
+    kClassic,
+    kLabelID,
+    kAskGeom,
+    kFile,
+    kManual
+  };
+  ESensitiveIDLabelScheme fSensitiveIDLabelScheme;
   std::string fSensitiveIDLabel;
-  virtual void ReadSensIDFile(const char* filename);
+  virtual void ReadSensIDFile(const char *filename);
 
 public:
   virtual void SetSensitiveIDLabelSchemeClassic() { fSensitiveIDLabelScheme = kClassic; }
-  virtual void SetSensitiveIDLabelSchemeLabelID(const std::string& label) 
-    { fSensitiveIDLabelScheme = kLabelID; fSensitiveIDLabel = label; }
-  virtual void SetSensitiveIDLabelSchemeAskGeom() { fSensitiveIDLabelScheme = kAskGeom; }  
-  virtual void SetSensitiveIDLabelSchemeFile(const std::string& filename)
-    { fSensitiveIDLabelScheme = kFile; ReadSensIDFile(filename.c_str()); }
+  virtual void SetSensitiveIDLabelSchemeLabelID(const std::string &label)
+  {
+    fSensitiveIDLabelScheme = kLabelID;
+    fSensitiveIDLabel = label;
+  }
+  virtual void SetSensitiveIDLabelSchemeAskGeom() { fSensitiveIDLabelScheme = kAskGeom; }
+  virtual void SetSensitiveIDLabelSchemeFile(const std::string &filename)
+  {
+    fSensitiveIDLabelScheme = kFile;
+    ReadSensIDFile(filename.c_str());
+  }
   virtual void SetSensitiveIDLabelSchemeManual() { fSensitiveIDLabelScheme = kManual; }
 };
 

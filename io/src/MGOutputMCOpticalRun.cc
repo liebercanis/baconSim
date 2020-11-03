@@ -64,6 +64,8 @@ using namespace std;
 using namespace CLHEP;
 
 const G4double MGOutputMCOpticalRun::LambdaE = twopi * 1.973269602e-16 * m * GeV;
+// Initialize static member
+TDirectory *MGOutputMCOpticalRun::opticalDir = NULL;
 
 MGOutputMCOpticalRun::MGOutputMCOpticalRun(G4bool isMother) : MGOutputRoot(isMother),
                                                               fMCOpticalRun(NULL),
@@ -904,6 +906,8 @@ void MGOutputMCOpticalRun::RootSteppingAction(const G4Step *step)
     trackWeight
   );
   */
+
+  oMap->fillFrequency(sensVolID);
 
   if (sensVolID == 100 && eDep > 0)
   {

@@ -72,6 +72,7 @@
 #include "globals.hh"
 #include "G4ThreeVector.hh"
 #include "G4LogicalVolume.hh"
+#include "G4Run.hh"
 
 #include "TF1.h"
 #include "TH1F.h"
@@ -104,11 +105,14 @@ public:
   }
   void SetParticlePosition(G4ThreeVector pos) { fPrimary = pos; }
 
+  void GeneratePrimaryScan(G4Event *event);
+  void GenerateZScan(G4Event *event);
   void DirectionDecider();
   void EnergyDecider();
   void PositionDecider();
   void PositionDecider(G4double x, G4double y, G4double z, G4double binWidth);
   void ParticleDecider();
+  void PositionXYDecider();
   G4bool IsInArgon(G4ThreeVector rp);
 
   //Messenger Commands
@@ -141,7 +145,21 @@ public:
     MGLog(routine) << " setting bin width  " << width << endlog;
     fBinWidth = width;
   }
+
+  void EndOfRunAction(const G4Run *grun)
+  {
+    MGLog(routine) << "  ****** EndOfRun  " << grun->GetRunID() << "  ****** "
+                   << " \n \t total events  " << grun->GetNumberOfEvent()
+                   << " in Argon " << nInArgon
+                   << "  \n ****** " << endlog;
+  }
+
   void SetNParticles(G4double N) { fNParticles = N; }
+  void SetScanBinX(G4int bin) { fScanBinX = bin; }
+  void SetScanBinY(G4int bin) { fScanBinY = bin; }
+  void SetScanBinZ(G4int bin) { fScanBinZ = bin; }
+  void SetGeneratePrimaryScan(G4bool val) { fSetPrimaryScan = val; }
+  void SetGenerateZScan(G4bool val) { fSetZScan = val; }
 
 private:
   static const G4double LambdaE;
@@ -160,5 +178,15 @@ private:
   G4String fParticleType;
   G4double fPhotonMean;
   G4double fPhotonSigma;
+  G4int fScanBinX;
+  G4int fScanBinY;
+  G4int fScanBinZ;
+  G4double fScanX;
+  G4double fScanY;
+  G4double fScanZ;
+  G4int nInArgon;
+  G4int nOutArgon;
+  G4bool fSetPrimaryScan;
+  G4bool fSetZScan;
 };
 #endif

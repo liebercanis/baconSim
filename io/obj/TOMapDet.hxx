@@ -22,6 +22,7 @@ public:
 
   int doNorm(TH3D *hNormMap, TH2D *hNormRZ, TH2D *hNormYZ, TH2D *hNormXY);
 
+  
   //
   void fill(double eDep, double x, double y, double z)
   {

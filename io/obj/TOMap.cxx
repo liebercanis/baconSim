@@ -22,6 +22,7 @@ ClassImp(TOMap)
   nbinsZ = int(2 * dimz / gridSpacing);
 
   TString theName("Map");
+  hDetFrequency = new TH1D("DetFreq", " det freqency ", 8, 0, 8);
   hNormMap = new TH3D(Form("%sNorm", theName.Data()), Form("%sNorm", theName.Data()), nbinsX, minX, maxX, nbinsY, minY, maxY, nbinsZ, minZ, maxZ);
   hNormRZ = new TH2D(Form("%sNormRZ", theName.Data()), Form("%sMapRZ", theName.Data()), nbinsR, minR, maxR, nbinsZ, minZ, maxZ);
   hNormXY = new TH2D(Form("%sNormXY", theName.Data()), Form("%sNormXY", theName.Data()), nbinsX, minX, maxX, nbinsY, minY, maxY);
@@ -45,6 +46,7 @@ void TOMap::addDet(TOMapDet d)
 
 void TOMap::print()
 {
+  printf(" Total det hits %.0f \n", hDetFrequency->GetEntries());
   printf("TOMap # maps  = %u norm events = %0.f \n", (unsigned)mapList.size(), hNormMap->GetEntries());
   std::map<std::string, TOMapDet>::iterator iter = mapList.begin();
   while (iter != mapList.end())

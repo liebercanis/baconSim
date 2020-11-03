@@ -51,11 +51,13 @@
 #include "G4UIcmdWithADoubleAndUnit.hh"
 #include "G4UIcmdWith3VectorAndUnit.hh"
 #include "G4UIcmdWithADouble.hh"
+#include "G4UIcmdWithABool.hh"
 using namespace CLHEP;
 //---------------------------------------------------------------------------//
 
 class G4UIdirectory;
 class G4UIcmdWithAString;
+class G4UIcmdWithAnInteger;
 class MGGeneratorLGNDLiquidArgon;
 
 class MGGeneratorLGNDLiquidArgonMessenger : public G4UImessenger
@@ -80,6 +82,12 @@ private:
   G4UIcmdWithADoubleAndUnit *fLiquidArgonSetSigma;
   G4UIcmdWithADoubleAndUnit *fLiquidArgonSetBinWidth;
   G4UIcmdWithADouble *fLiquidArgonSetNParticles;
+  G4UIcmdWithABool *fLiquidArgonSetPrimaryScan;
+  G4UIcmdWithABool *fLiquidArgonSetZScan;
+  // set bins
+  G4UIcmdWithAnInteger *fLiquidArgonSetBinX;
+  G4UIcmdWithAnInteger *fLiquidArgonSetBinY;
+  G4UIcmdWithAnInteger *fLiquidArgonSetBinZ;
   //G4UIcmdWithAString	*fSetSurfaceVolumeCmd;
 };
 #endif

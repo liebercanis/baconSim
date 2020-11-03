@@ -51,7 +51,6 @@
 #include "G4Alpha.hh"
 #include "G4OpticalPhoton.hh"
 #include "G4ParticleGun.hh"
-#include "G4Run.hh"
 
 #include "G4PhysicalVolumeStore.hh"
 #include "G4VSolid.hh"
@@ -64,6 +63,7 @@
 #include "generators/MGGeneratorLGNDLiquidArgon.hh"
 #include "generators/MGGeneratorLGNDLiquidArgonMessenger.hh"
 #include "io/MGLogger.hh"
+#include "io/MGOutputMCOpticalRun.hh"
 #include "legendgeometry/LGND_200_Cryostat.hh"
 #include "bacongeometry/BACON_Baseline.hh"
 #include "G4TransportationManager.hh"
@@ -88,9 +88,14 @@ MGGeneratorLGNDLiquidArgon::MGGeneratorLGNDLiquidArgon()
   fZ0 = 0; // set to bottom of cryostat
   fBinWidth = 0;
   fNParticles = 1;
+  fScanBinX = -1; // set invalid by default
+  fScanBinY = -1;
+  fScanBinZ = -1;
   fParticleType = G4String("opticalphoton");
   fPhotonMean = 128.0 * nm;
   fPhotonSigma = 2.929 * nm;
+  nInArgon = 0;
+  nOutArgon = 0;
   MGLog(routine) << " fPhotonMean   " << fPhotonMean / nm
                  << " fPhotonSigma  " << fPhotonSigma / nm << endlog;
 }
@@ -133,7 +138,7 @@ void MGGeneratorLGNDLiquidArgon::EnergyDecider()
     //Some materials don't have optical properties bellow 115*nm
     if (waveL < 115 * nm)
     {
-      MGLog(routine) << " photon wavelength was  " << waveL / nm << " set to 115 nm " << endlog;
+      //MGLog(routine) << " photon wavelength was  " << waveL / nm << " set to 115 nm " << endlog;
       waveL = 115 * nm;
     }
     fCurrentEnergy = LambdaE / waveL;
@@ -167,11 +172,68 @@ void MGGeneratorLGNDLiquidArgon::PositionDecider()
 
     //check that point in in "Argon-Liq"
     isIn = IsInArgon(rpos);
-    errorCounter++;
-    if (errorCounter % 1000 == 0)
+    if (isIn)
+      ++nInArgon;
+    else
+    {
+      ++nOutArgon;
+      errorCounter++;
+    }
+    if (errorCounter > 0 && errorCounter % 1000 == 0)
     {
       G4Navigator *theNavigator = G4TransportationManager::GetTransportationManager()->GetNavigatorForTracking();
-      G4cout << " out of LAr counter " << errorCounter
+      MGLog(routine) << " out of LAr counter " << errorCounter
+                     << " fBinWidth " << fBinWidth
+                     << " fRadius max " << fRadiusMax
+                     << " fRadiusMin " << fRadiusMin
+                     << " at pos r= " << rpos.perp() << " phi= "
+                     << " , z= " << rpos.z()
+                     << " volume = " << theNavigator->LocateGlobalPointAndSetup(rpos)->GetName()
+                     << endlog;
+    }
+    if (errorCounter > 10000)
+    {
+      G4cout << "errorCounter has exceeded 1e4 counts!" << G4endl;
+      MGLog(fatal) << "errorCounter has exceeded 1e4 counts!" << endlog;
+    }
+  } while (!isIn);
+
+  fPrimary = rpos;
+}
+/**/
+void MGGeneratorLGNDLiquidArgon::PositionXYDecider()
+{
+  // boundary protection is in GeneratePrimaryVertex which calls this function
+  G4ThreeVector rpos(1, 1, 1);
+  G4bool isIn = false;
+
+  //Generate random points in a bound box around inner_cryostat
+  int errorCounter = 0;
+  do
+  {
+    /**  PDF = (2/R^2)*r **/
+    G4double rand = G4UniformRand();
+    G4double c2 = pow(fRadiusMax, 2.) - pow(fRadiusMin, 2.);
+    G4double r = sqrt(c2 * rand + pow(fRadiusMin, 2.));
+    G4double theta = 2 * pi * G4UniformRand();
+    G4double z = fScanZ;
+    rpos.setRhoPhiZ(r, theta, z);
+
+    //check that point in in "Argon-Liq"
+    isIn = IsInArgon(rpos);
+    if (isIn)
+    {
+      ++nInArgon;
+    }
+    else
+    {
+      ++nOutArgon;
+      errorCounter++;
+    }
+    if (errorCounter > 0 && errorCounter % 100 == 0)
+    {
+      G4Navigator *theNavigator = G4TransportationManager::GetTransportationManager()->GetNavigatorForTracking();
+      G4cout << " PositionXYDecider out of LAr counter " << errorCounter
              << " fBinWidth " << fBinWidth
              << " fRadius max " << fRadiusMax
              << " fRadiusMin " << fRadiusMin
@@ -189,6 +251,7 @@ void MGGeneratorLGNDLiquidArgon::PositionDecider()
 
   fPrimary = rpos;
 }
+/**/
 void MGGeneratorLGNDLiquidArgon::PositionDecider(G4double xPos, G4double yPos, G4double zPos, G4double binWidth)
 {
 
@@ -261,80 +324,158 @@ void MGGeneratorLGNDLiquidArgon::ParticleDecider()
   }
 }
 
+/**
+ * we now have four cases-- volume scan, point scan and z scan all bins scan 
+ */
 void MGGeneratorLGNDLiquidArgon::GeneratePrimaryVertex(G4Event *event)
 {
+  bool pointScan = false;
+  if (fScanBinX >= 0 && fScanBinY >= 0 && fScanBinZ >= 0)
+    pointScan = true;
+
+  if (event->GetEventID() == 0)
+  {
+    if (fSetPrimaryScan)
+      MGLog(routine) << " Scan type is primary scan  " << endlog;
+    else if (fSetZScan)
+      MGLog(routine) << " Scan type is Z scan  " << endlog;
+    else if (pointScan)
+      MGLog(routine) << " Scan type is point scan  X " << fScanBinX << " Y " << fScanBinY << " Z " << fScanBinZ << endlog;
+    else
+      MGLog(routine) << " Scan type is volume scan  " << endlog;
+  }
+
+  if (fSetPrimaryScan)
+  {
+    GeneratePrimaryScan(event);
+    return;
+  }
+  if (fSetZScan)
+  {
+    GenerateZScan(event);
+    return;
+  }
+
+  TDirectory *opticalDir = MGOutputMCOpticalRun::opticalDir;
+  //if (opticalDir)
+  //  MGLog(routine) << " got    " << opticalDir->GetName() << endlog;
+  TH3D *hmap;
+  opticalDir->GetObject("MapNorm", hmap);
+  if (!hmap && pointScan)
+    MGLog(routine) << " aint got opticalDir    " << endlog;
+  /* point scan case */
+  if (hmap && pointScan)
+  {
+    fScanX = hmap->GetXaxis()->GetBinLowEdge(fScanBinX);
+    fScanY = hmap->GetYaxis()->GetBinLowEdge(fScanBinY);
+    fScanZ = hmap->GetZaxis()->GetBinLowEdge(fScanBinZ);
+    fPrimary.setX(fScanX);
+    fPrimary.setY(fScanY);
+    fPrimary.setZ(fScanZ);
+    /*
+    MGLog(routine)
+        << " hmap bins " << hmap->GetNbinsX() << " " << fScanBinX << " " << fScanX
+        << " Y " << hmap->GetNbinsY() << " " << fScanBinY << " " << fScanY
+        << " Z " << hmap->GetNbinsZ() << " " << fScanBinZ << " " << fScanZ
+        << endlog;
+        */
+  }
+
+  /* volume scan case */
   //User inputs specific height fZ, max height fZ+binwidth, fNParticles
   // max and min radius
   BACON_Baseline *cryostat = new BACON_Baseline("LGND200generatorCryostat");
   G4double cryoR = cryostat->GetCryostatID() / 2.;
   G4double cryoHalfZ = cryostat->GetCryostatHeight() / 2.;
   G4double sipmDimX = cryostat->GetSipmDimX();
-  G4double sipmDimY = cryostat->GetSipmDimY();
+  G4double sipmDimZ = cryostat->GetSipmDimZ();
   delete cryostat;
 
-  if (fBinWidth == 0)
+  /* setup for  volume scan */
+  if (!pointScan)
   {
-    fBinWidth = 2 * cryoHalfZ;
-    MGLog(routine) << " WARNING resetting fBinWdith to   " << fBinWidth << endlog;
-  }
+    if (fBinWidth == 0)
+    {
+      fBinWidth = 2 * cryoHalfZ;
+      MGLog(routine) << " WARNING resetting fBinWdith to   " << fBinWidth << endlog;
+    }
 
-  G4double zMin = fZ + fCenterVector.z();
-  G4double zMax = fZ + fCenterVector.z() + fBinWidth;
+    G4double zMin = fZ + fCenterVector.z();
+    G4double zMax = fZ + fCenterVector.z() + fBinWidth;
 
-  if (fRadiusMax == 0)
-  {
-    fRadiusMax = cryoR;
-    MGLog(routine) << " WARNING resetting fRadiumMax to   " << fRadiusMax << endlog;
-  }
-  if (fBinWidth == 0)
-  {
-    fBinWidth = cryoHalfZ - fZ - fCenterVector.z();
-    MGLog(routine) << " WARNING resetting fBinWdith "
-                   << fBinWidth
-                   << " fz " << fZ
-                   << " fCenterVector.z " << fCenterVector.z() << endlog;
-  }
-  // do not know why I have to add small number
-  if (zMax > cryoHalfZ + 1.0E-9)
-  {
-    MGLog(routine) << " WARNING zMax > cryoHalfZ  fBinWdith "
-                   << fBinWidth
-                   << " resetting to " << cryoHalfZ - fZ - fCenterVector.z() << endlog;
-    fBinWidth = cryoHalfZ - fZ - fCenterVector.z();
-  }
-  if (zMin < -cryoHalfZ)
-  {
-    fZ = -1.0 * (cryoHalfZ + fCenterVector.z());
-    MGLog(routine) << " WARNING resetting fZ cryoHalfZ " << cryoHalfZ << " fCenterVector.z() " << fCenterVector.z() << " WARNING <zMin resetting fZ   " << fZ << endl;
-  }
+    if (fRadiusMax == 0)
+    {
+      fRadiusMax = cryoR;
+      MGLog(routine) << " WARNING resetting fRadiumMax to   " << fRadiusMax << endlog;
+    }
+    if (fBinWidth == 0)
+    {
+      fBinWidth = cryoHalfZ - fZ - fCenterVector.z();
+      MGLog(routine) << " WARNING resetting fBinWdith "
+                     << fBinWidth
+                     << " fz " << fZ
+                     << " fCenterVector.z " << fCenterVector.z() << endlog;
+    }
+    // do not know why I have to add small number
+    if (zMax > cryoHalfZ + 1.0E-9)
+    {
+      MGLog(routine) << " WARNING zMax > cryoHalfZ  fBinWdith "
+                     << fBinWidth
+                     << " resetting to " << cryoHalfZ - fZ - fCenterVector.z() << endlog;
+      fBinWidth = cryoHalfZ - fZ - fCenterVector.z();
+    }
+    if (zMin < -cryoHalfZ)
+    {
+      fZ = -1.0 * (cryoHalfZ + fCenterVector.z());
+      MGLog(routine) << " WARNING resetting fZ cryoHalfZ " << cryoHalfZ << " fCenterVector.z() " << fCenterVector.z() << " WARNING <zMin resetting fZ   " << fZ << endl;
+    }
 
-  if (event->GetEventID() == 0)
-  {
-    MGLog(routine) << " all in mm:  "
-                   << " \n sipmDimX " << sipmDimX
-                   << " \n sipmDimY " << sipmDimY
-                   << " \n cryo rmax  " << cryoR
-                   << " \n cryo zmax  " << cryoHalfZ
-                   << " \n cryo zmin  " << -1. * cryoHalfZ
-                   << " \n fRadiusMax " << fRadiusMax
-                   << " \n fRadiusMin " << fRadiusMin
-                   << " \n fZ " << fZ
-                   << " \n fBinWidth " << fBinWidth
-                   << " \n Z min " << fZ + fCenterVector.z()
-                   << " \n Z max  " << fZ + fCenterVector.z() + fBinWidth
-                   << " \n fCenterVector r= " << fCenterVector.perp() << " phi= " << fCenterVector.phi() << " z= " << fCenterVector.z()
-                   << " \n fNParticles " << fNParticles
-                   << " \n photons with :  \n fPhotonMean   " << fPhotonMean / nm
-                   << "  fPhotonSigma  " << fPhotonSigma / nm << " nm " << endlog;
+    if (event->GetEventID() == 0)
+    {
+      MGLog(routine) << " all in mm:  "
+                     << " \n sipmDimX " << sipmDimX
+                     << " \n sipmDimZ " << sipmDimZ
+                     << " \n cryo rmax  " << cryoR
+                     << " \n cryo zmax  " << cryoHalfZ
+                     << " \n cryo zmin  " << -1. * cryoHalfZ
+                     << " \n fRadiusMax " << fRadiusMax
+                     << " \n fRadiusMin " << fRadiusMin
+                     << " \n fZ " << fZ
+                     << " \n fBinWidth " << fBinWidth
+                     << " \n Z min " << fZ + fCenterVector.z()
+                     << " \n Z max  " << fZ + fCenterVector.z() + fBinWidth
+                     << " \n fCenterVector r= " << fCenterVector.perp() << " phi= " << fCenterVector.phi() << " z= " << fCenterVector.z()
+                     << " \n scan bin X " << fScanBinX
+                     << " \n scan bin Y " << fScanBinY
+                     << " \n scan bin Z " << fScanBinZ
+                     << " \n fNParticles " << fNParticles
+                     << " \n photons with :  \n fPhotonMean   " << fPhotonMean / nm
+                     << "  fPhotonSigma  " << fPhotonSigma / nm << " nm " << endlog;
+    }
   }
-
-  fParticleGun->SetParticlePolarization(G4ThreeVector(2 * G4UniformRand() - 1, 2 * G4UniformRand() - 1, 2 * G4UniformRand() - 1));
+  //fParticleGun->SetParticlePolarization(G4ThreeVector(2 * G4UniformRand() - 1, 2 * G4UniformRand() - 1, 2 * G4UniformRand() - 1));
 
   //what is the particle
   ParticleDecider();
+  fParticleGun->SetParticlePolarization(G4ThreeVector(1, 1, 0));
 
   //determine particle position
-  PositionDecider();
+  // randomly choose x,y for zScan
+  if (!pointScan)
+    PositionDecider();
+
+  // in case of pointScan might not be in argon
+  if (pointScan)
+  {
+    if (IsInArgon(fPrimary))
+      ++nInArgon;
+    else
+    {
+      ++nOutArgon;
+      return;
+    }
+  }
+
   MGLog(debugging) << "Generator vertex " << fPrimary << endlog;
   //determine particle energy
   EnergyDecider();
@@ -352,5 +493,115 @@ void MGGeneratorLGNDLiquidArgon::GeneratePrimaryVertex(G4Event *event)
     DirectionDecider();
     //MGLog(routine) << ip << " np " << fDirection.theta() << "  " << fDirection.phi() << endlog;
     fParticleGun->GeneratePrimaryVertex(event);
+  }
+}
+
+// scan of entire map //
+void MGGeneratorLGNDLiquidArgon::GeneratePrimaryScan(G4Event *event)
+{
+  TDirectory *opticalDir = MGOutputMCOpticalRun::opticalDir;
+  //if (opticalDir)
+  //  MGLog(routine) << " got    " << opticalDir->GetName() << endlog;
+  TH3D *hmap;
+  opticalDir->GetObject("MapNorm", hmap);
+  if (!hmap)
+  {
+    MGLog(fatal) << " aint got opticalDir    " << endlog;
+    return;
+  }
+  //fParticleGun->SetParticlePolarization(G4ThreeVector(2 * G4UniformRand() - 1, 2 * G4UniformRand() - 1, 2 * G4UniformRand() - 1));
+  //what is the particle
+  ParticleDecider();
+  fParticleGun->SetParticlePolarization(G4ThreeVector(1, 1, 0));
+  EnergyDecider();
+  DirectionDecider();
+  fParticleGun->SetNumberOfParticles(1);
+  fParticleGun->SetParticleMomentumDirection(fDirection);
+  fParticleGun->SetParticleEnergy(fCurrentEnergy);
+
+  // scan over map
+  int scanCount = 0;
+  for (int zbin = 0; zbin < hmap->GetNbinsZ(); ++zbin)
+  {
+    for (int ybin = 0; ybin < hmap->GetNbinsY(); ++ybin)
+    {
+      for (int xbin = 0; xbin < hmap->GetNbinsX(); ++xbin)
+      {
+        fScanX = hmap->GetXaxis()->GetBinCenter(xbin);
+        fScanY = hmap->GetYaxis()->GetBinCenter(ybin);
+        fScanZ = hmap->GetZaxis()->GetBinCenter(zbin);
+        fPrimary.setX(fScanX);
+        fPrimary.setY(fScanY);
+        fPrimary.setZ(fScanZ);
+        // is it in argon?
+        if (IsInArgon(fPrimary))
+          ++nInArgon;
+        else
+        {
+          ++nOutArgon;
+          continue;
+        }
+        fParticleGun->SetParticlePosition(fPrimary);
+        if (scanCount % 1000 == 0)
+          MGLog(routine) << event->GetEventID() << "  (" << scanCount << ")  (" << ybin << "," << xbin << "," << zbin << ")  (" << fPrimary.x() << "," << fPrimary.y() << "," << fPrimary.z() << ")" << endlog;
+        fParticleGun->GeneratePrimaryVertex(event);
+        ++scanCount;
+      }
+    }
+  }
+}
+
+// scan of entire map //
+void MGGeneratorLGNDLiquidArgon::GenerateZScan(G4Event *event)
+{
+  TDirectory *opticalDir = MGOutputMCOpticalRun::opticalDir;
+  //if (opticalDir)
+  //  MGLog(routine) << " got    " << opticalDir->GetName() << endlog;
+  TH3D *hmap;
+  opticalDir->GetObject("MapNorm", hmap);
+  if (!hmap)
+  {
+    MGLog(fatal) << " aint got opticalDir    " << endlog;
+    return;
+  }
+  fScanZ = hmap->GetZaxis()->GetBinCenter(fScanBinZ);
+
+  //fParticleGun->SetParticlePolarization(G4ThreeVector(2 * G4UniformRand() - 1, 2 * G4UniformRand() - 1, 2 * G4UniformRand() - 1));
+  //what is the particle
+  ParticleDecider();
+  fParticleGun->SetParticlePolarization(G4ThreeVector(1, 1, 0));
+  EnergyDecider();
+  DirectionDecider();
+  fParticleGun->SetNumberOfParticles(1);
+  fParticleGun->SetParticleMomentumDirection(fDirection);
+  fParticleGun->SetParticleEnergy(fCurrentEnergy);
+
+  // scan over map
+  //int scanCount = 0;
+  for (int ybin = 0; ybin < hmap->GetNbinsY(); ++ybin)
+  {
+    for (int xbin = 0; xbin < hmap->GetNbinsX(); ++xbin)
+    {
+      fScanX = hmap->GetXaxis()->GetBinCenter(xbin);
+      fScanY = hmap->GetYaxis()->GetBinCenter(ybin);
+      fPrimary.setX(fScanX);
+      fPrimary.setY(fScanY);
+      fPrimary.setZ(fScanZ);
+      // is it in argon?
+      if (IsInArgon(fPrimary))
+        ++nInArgon;
+      else
+      {
+        ++nOutArgon;
+        continue;
+      }
+      fParticleGun->SetParticlePosition(fPrimary);
+      /*
+      if (scanCount % 1000 == 0)
+        MGLog(routine) << event->GetEventID() << "  (" << scanCount << ")  (" << ybin << "," << xbin << "," << fScanBinZ << ")  (" << fPrimary.x() << "," << fPrimary.y() << "," << fPrimary.z() << ")" << endlog;
+      ++scanCount;
+      */
+      fParticleGun->GeneratePrimaryVertex(event);
+    }
   }
 }

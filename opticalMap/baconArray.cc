@@ -7,18 +7,18 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-  int nevents = 10000;
+  int nevents = 1000;
   if (argc > 1)
     nevents = atoi(argv[1]);
   ofstream outputFile;
-  int nparticles = 10000;
+  int nparticles = 1;
   double mean = 128;
   double sigma = 2.929;
   string fileName = "baconMap";
-  int njobs = 10;
-  cout << " map " << njobs << " jobs with  " << nevents << " fileName  " << fileName << "x.mac " << endl;
+  int zBins = 116;
+  cout << " map " << zBins << " jobs with  " << nevents << " fileName  " << fileName << "x.mac " << endl;
   char sub[180];
-  for (int i = 0; i < njobs; i++)
+  for (int i = 1; i < zBins; i++)
   {
     //cout<<"Setting Z to "<<z<<"mm...Range is from 300mm to -300mm , fileName is "<<fileName+ std::to_string(i) +string(".mac")<<endl;
     outputFile.open(fileName + to_string(i) + string(".mac"));
@@ -34,29 +34,28 @@ int main(int argc, char *argv[])
     outputFile << "/MG/eventaction/reportingfrequency 100" << endl;
     sprintf(sub, "/MG/eventaction/rootfilename %s%i.root", fileName.c_str(), i);
     outputFile << sub << endl;
-    outputFile << "/MG/io/MCOpticalRun/SetSensitiveIDLabelScheme manual" << endl;
-    outputFile << "/MG/io/MCOpticalRun/AddSensitiveVolnameID physicalPMT_0 100" << endl;
-    outputFile << "/MG/io/MCOpticalRun/setRunID 001" << endl;
+    sprintf(sub, "/MG/io/MCOpticalRun/setRunID %i ", i);
+    outputFile << sub << endl;
     outputFile << "/MG/io/MCOpticalRun/useTimeWindow true" << endl;
     outputFile << "/MG/io/MCOpticalRun/setTimeWindow 86400 second" << endl;
     outputFile << "/MG/io/MCOpticalRun/setNSteps 10000000000000" << endl;
     outputFile << "/MG/generator/select LGNDLiquidArgon" << endl;
     outputFile << "/MG/generator/LGNDLiquidArgon/SetRadiusMax 0. mm" << endl;
     outputFile << "/MG/generator/LGNDLiquidArgon/SetRadiusMin 0. mm" << endl;
-    outputFile << "/MG/generator/LGNDLiquidArgon/SetHeight 0 mm" << endl;
     outputFile << "/MG/generator/LGNDLiquidArgon/SetCenterVector 0.0 0.0 -291.1 mm" << endl;
-    sprintf(sub, "/MG/generator/LGNDLiquidArgon/SetPhotonMean %.1f nm ", mean);
-    outputFile << sub << endl;
     sprintf(sub, "/MG/generator/LGNDLiquidArgon/SetPhotonSigma %.3f nm ", sigma);
     outputFile << sub << endl;
     sprintf(sub, "/MG/generator/LGNDLiquidArgon/SetNParticles %i ", nparticles);
     outputFile << sub << endl;
     outputFile << "/MG/generator/LGNDLiquidArgon/SetBinWidth 0 mm" << endl;
+    outputFile << "/MG/generator/LGNDLiquidArgon/SetZScan true" << endl;
+    sprintf(sub, "/MG/generator/LGNDLiquidArgon/SetScanBinZ %i ", i);
+    outputFile << sub << endl;
     outputFile << "/run/beamOn " << nevents << endl;
     outputFile.close();
   }
   string sfileName("sbatchBacon");
-  for (int i = 0; i < njobs; i++)
+  for (int i = 1; i < zBins; i++)
   {
     //cout<<"Setting Z to "<<z<<"mm...Range is from 300mm to -300mm , fileName is "<<sfileName+ std::to_string(i) +string(".sh")<<endl;
     string macroName = fileName + to_string(i) + string(".mac");

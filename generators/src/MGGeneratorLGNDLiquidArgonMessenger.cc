@@ -52,6 +52,7 @@
 #include "G4UIcmdWithADoubleAndUnit.hh"
 #include "G4UIcmdWith3VectorAndUnit.hh"
 #include "G4UIcmdWithAString.hh"
+#include "G4UIcmdWithAnInteger.hh"
 
 #include "generators/MGGeneratorLGNDLiquidArgon.hh"
 #include "generators/MGGeneratorLGNDLiquidArgonMessenger.hh"
@@ -63,7 +64,26 @@ MGGeneratorLGNDLiquidArgonMessenger::MGGeneratorLGNDLiquidArgonMessenger(MGGener
 {
   // /MG/generator/LiquidArgon
   fLiquidArgonDirectory = new G4UIdirectory("/MG/generator/LGNDLiquidArgon/");
-  fLiquidArgonDirectory->SetGuidance("Set to generate optical photons @128 nm in argon inside cryostat");
+  fLiquidArgonDirectory->SetGuidance("Set options for generating optical photons @128 nm in argon inside cryostat");
+
+  fLiquidArgonSetPrimaryScan = new G4UIcmdWithABool("/MG/generator/LGNDLiquidArgon/SetPrimaryScan", this);
+  fLiquidArgonSetPrimaryScan->SetGuidance("Set true for primary vertiex scan");
+  fLiquidArgonSetPrimaryScan->SetDefaultValue(false);
+  fLiquidArgonSetZScan = new G4UIcmdWithABool("/MG/generator/LGNDLiquidArgon/SetZScan", this);
+  fLiquidArgonSetZScan->SetGuidance("Set true for primary vertiex scan in z slicce");
+  fLiquidArgonSetZScan->SetDefaultValue(false);
+  fLiquidArgonSetBinX = new G4UIcmdWithAnInteger("/MG/generator/LGNDLiquidArgon/SetScanBinX", this);
+  fLiquidArgonSetBinX->SetGuidance("Define X scan bin");
+  fLiquidArgonSetBinX->SetParameterName("ScanBinX", true);
+  fLiquidArgonSetBinX->SetDefaultValue(-1);
+  fLiquidArgonSetBinY = new G4UIcmdWithAnInteger("/MG/generator/LGNDLiquidArgon/SetScanBinY", this);
+  fLiquidArgonSetBinY->SetGuidance("Define Y scan bin");
+  fLiquidArgonSetBinY->SetParameterName("ScanBinY", true);
+  fLiquidArgonSetBinY->SetDefaultValue(-1);
+  fLiquidArgonSetBinZ = new G4UIcmdWithAnInteger("/MG/generator/LGNDLiquidArgon/SetScanBinZ", this);
+  fLiquidArgonSetBinZ->SetGuidance("Define Z scan bin");
+  fLiquidArgonSetBinZ->SetParameterName("ScanBinZ", true);
+  fLiquidArgonSetBinZ->SetDefaultValue(-1);
 
   fLiquidArgonSetRadius = new G4UIcmdWithADoubleAndUnit("/MG/generator/LGNDLiquidArgon/SetRadiusMax", this);
   fLiquidArgonSetRadius->SetGuidance("Define Max Radius to Generate points inside a Cylidrical Croystat that has diameter = height");
@@ -113,7 +133,7 @@ MGGeneratorLGNDLiquidArgonMessenger::MGGeneratorLGNDLiquidArgonMessenger(MGGener
   fLiquidArgonSetSigma = new G4UIcmdWithADoubleAndUnit("/MG/generator/LGNDLiquidArgon/SetPhotonSigma", this);
   fLiquidArgonSetSigma->SetGuidance("Define photon wavelength Gaussian sigma");
   fLiquidArgonSetSigma->SetDefaultUnit("nm");
-  fLiquidArgonSetSigma->SetUnitCategory("length");
+  fLiquidArgonSetSigma->SetUnitCategory("Length");
   fLiquidArgonSetSigma->SetUnitCandidates("nm micron");
 }
 
@@ -138,6 +158,11 @@ MGGeneratorLGNDLiquidArgonMessenger::~MGGeneratorLGNDLiquidArgonMessenger()
   delete fLiquidArgonSetCenterVector;
   delete fLiquidArgonSetBinWidth;
   delete fLiquidArgonSetNParticles;
+  delete fLiquidArgonSetBinX;
+  delete fLiquidArgonSetBinY;
+  delete fLiquidArgonSetBinZ;
+  delete fLiquidArgonSetPrimaryScan;
+  delete fLiquidArgonSetZScan;
 }
 
 //---------------------------------------------------------------------------//
@@ -179,5 +204,25 @@ void MGGeneratorLGNDLiquidArgonMessenger::SetNewValue(G4UIcommand *cmd, G4String
   else if (cmd == fLiquidArgonSetSigma)
   {
     fLiquidArgonGenerator->SetPhotonSigma(fLiquidArgonSetSigma->GetNewDoubleValue(str));
+  }
+  else if (cmd == fLiquidArgonSetBinX)
+  {
+    fLiquidArgonGenerator->SetScanBinX(fLiquidArgonSetBinX->GetNewIntValue(str));
+  }
+  else if (cmd == fLiquidArgonSetBinY)
+  {
+    fLiquidArgonGenerator->SetScanBinY(fLiquidArgonSetBinY->GetNewIntValue(str));
+  }
+  else if (cmd == fLiquidArgonSetBinZ)
+  {
+    fLiquidArgonGenerator->SetScanBinZ(fLiquidArgonSetBinZ->GetNewIntValue(str));
+  }
+  else if (cmd == fLiquidArgonSetPrimaryScan)
+  {
+    fLiquidArgonGenerator->SetGeneratePrimaryScan(fLiquidArgonSetPrimaryScan->GetNewBoolValue(str));
+  }
+  else if (cmd == fLiquidArgonSetZScan)
+  {
+    fLiquidArgonGenerator->SetGenerateZScan(fLiquidArgonSetZScan->GetNewBoolValue(str));
   }
 }
