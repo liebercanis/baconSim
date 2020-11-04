@@ -33,7 +33,7 @@ public:
   G4double GetCryostatID() { return fCryoID; }
   G4double GetCryostatHeight() { return fCryoHeight; }
   G4double GetSipmDimX() { return fSipmDimX; }
-  G4double GetSipmDimY() { return fSipmDimY; }
+  G4double GetSipmDimZ() { return fSipmDimZ; }
 
   void SetLiquid(G4String str) { fLiquid = str; }
 
@@ -46,7 +46,7 @@ private:
   G4double fCryoHeight;
   G4double fDelta;
   G4double fSipmDimX;
-  G4double fSipmDimY;
+  G4double fSipmDimZ;
 
   BACON_BaselineMessenger *fMessenger;
   G4String fLiquid;
