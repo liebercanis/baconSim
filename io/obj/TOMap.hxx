@@ -83,7 +83,7 @@ public:
   void fillNorm(double x, double y, double z)
   {
     hNormMap->Fill(x, y, z);
-    double r = sqrt(x * x + y * y + z * z);
+    double r = sqrt(x * x + y * y);
     hNormRZ->Fill(r, z);
     hNormYZ->Fill(y, z);
     hNormXY->Fill(x, y);

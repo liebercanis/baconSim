@@ -28,7 +28,7 @@ public:
   {
     hEDep->Fill(eDep * 1.0E6); // convert to eV
     hRawMap->Fill(x, y, z);
-    double r = sqrt(x * x + y * y + z * z);
+    double r = sqrt(x * x + y * y );
     hRawRZ->Fill(r, z);
     hRawYZ->Fill(y, z);
     hRawXY->Fill(x, y);
