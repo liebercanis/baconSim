@@ -1,4 +1,4 @@
-enum {NDET=7};
+enum {NDET=8};
 TH3D* hMap[NDET];
 TH2D* hMapXY[NDET];
 TH2D* hMapYZ[NDET];
