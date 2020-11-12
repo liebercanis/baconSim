@@ -1,4 +1,4 @@
-enum {NDET=7};
+enum {NDET=8};
 TH3D* hMap[NDET];
 TH2D* hMapXY[NDET];
 TH2D* hMapYZ[NDET];
@@ -18,24 +18,24 @@ void makeNames(){
   
   for (int i = 0; i < NDET - 2; ++i)
     save[i] = Form("SipmSumMap%i", i);
-  save[5].Form("PMTSumMap%i", 0);
-  save[6].Form("PMTSumMap%i", 1);
+  save[6].Form("PMTSumMap%i", 0);
+  save[7].Form("PMTSumMap%i", 1);
 
   for (int i = 0; i < NDET - 2; ++i)
     saveXY[i] = Form("SipmSumMap%iXY", i);
-  saveXY[5].Form("PMTSumMap%iXY", 0);
-  saveXY[6].Form("PMTSumMap%iXY", 1);
+  saveXY[6].Form("PMTSumMap%iXY", 0);
+  saveXY[7].Form("PMTSumMap%iXY", 1);
 
     for (int i = 0; i < NDET - 2; ++i)
     saveYZ[i] = Form("SipmSumMap%iYZ", i);
-  saveYZ[5].Form("PMTSumMap%iYZ", 0);
-  saveYZ[6].Form("PMTSumMap%iYZ", 1);
+  saveYZ[6].Form("PMTSumMap%iYZ", 0);
+  saveYZ[7].Form("PMTSumMap%iYZ", 1);
 
   
   for (int i = 0; i < NDET - 2; ++i)
     saveRZ[i] = Form("SipmSumMap%iYZ", i);
-  saveRZ[5].Form("PMTSumMap%iYZ", 0);
-  saveRZ[6].Form("PMTSumMap%iYZ", 1);
+  saveRZ[6].Form("PMTSumMap%iYZ", 0);
+  saveRZ[7].Form("PMTSumMap%iYZ", 1);
 }
 
 void getHistograms()
