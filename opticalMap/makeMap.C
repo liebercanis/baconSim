@@ -140,10 +140,12 @@ void getInit(TString fname)
   }
 
   for(int i=0; i< NDET; ++i) if(hMap[i]) {
-    cout << " init " << fname << " " << hMap[i]->GetName() << " entries " << hMap[i]->GetEntries() << endl;
-    cout << " init " << fname << " " << hMapXY[i]->GetName() << " entries " << hMapXY[i]->GetEntries() << endl;
-    cout << " init " << fname << " " << hMapYZ[i]->GetName() << " entries " << hMapYZ[i]->GetEntries() << endl;
-    cout << " init " << fname << " " << hMapRZ[i]->GetName() << " entries " << hMapRZ[i]->GetEntries() << endl;
+    if(hMap[i]->GetName()) {
+      cout << " init " << fname << " " << hMap[i]->GetName() << " entries " << hMap[i]->GetEntries() << endl;
+      cout << " init " << fname << " " << hMapXY[i]->GetName() << " entries " << hMapXY[i]->GetEntries() << endl;
+      cout << " init " << fname << " " << hMapYZ[i]->GetName() << " entries " << hMapYZ[i]->GetEntries() << endl;
+      cout << " init " << fname << " " << hMapRZ[i]->GetName() << " entries " << hMapRZ[i]->GetEntries() << endl;
+    }
   }
 
 }
@@ -203,10 +205,12 @@ void getOne(TString fname)
 
   for (int i = 0; i < NDET; ++i)
   {
-    cout << " sum " << fname << " " << hMap[i]->GetName() << " entries " << hMap[i]->GetEntries() << endl;
-    cout << " sum " << fname << " " << hMapXY[i]->GetName() << " entries " << hMapXY[i]->GetEntries() << endl;
-    cout << " sum " << fname << " " << hMapYZ[i]->GetName() << " entries " << hMapYZ[i]->GetEntries() << endl;
-    cout << " sum " << fname << " " << hMapRZ[i]->GetName() << " entries " << hMapRZ[i]->GetEntries() << endl;
+    if(hMap[i]->GetName()) {
+      cout << " sum " << fname << " " << hMap[i]->GetName() << " entries " << hMap[i]->GetEntries() << endl;
+      cout << " sum " << fname << " " << hMapXY[i]->GetName() << " entries " << hMapXY[i]->GetEntries() << endl;
+      cout << " sum " << fname << " " << hMapYZ[i]->GetName() << " entries " << hMapYZ[i]->GetEntries() << endl;
+      cout << " sum " << fname << " " << hMapRZ[i]->GetName() << " entries " << hMapRZ[i]->GetEntries() << endl;
+    }
   }
 }
 
