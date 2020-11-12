@@ -17,46 +17,46 @@ TString saveRZ[NDET];
 void makeNames(){
   for (int i = 0; i < NDET - 2; ++i)
     searchM[i] = Form("SipmMap%i", i);
-  searchM[5].Form("PMTMap%i", 0);
-  searchM[6].Form("PMTMap%i", 1);
+  searchM[6].Form("PMTMap%i", 0);
+  searchM[7].Form("PMTMap%i", 1);
 
   for (int i = 0; i < NDET - 2; ++i)
     save[i] = Form("SipmSumMap%i", i);
-  save[5].Form("PMTSumMap%i", 0);
-  save[6].Form("PMTSumMap%i", 1);
+  save[6].Form("PMTSumMap%i", 0);
+  save[7].Form("PMTSumMap%i", 1);
 
   /* XY */
   for (int i = 0; i < NDET - 2; ++i)
     searchXY[i] = Form("SipmMap%iXY", i);
-  searchXY[5].Form("PMTMap%iXY", 0);
-  searchXY[6].Form("PMTMap%iXY", 1);
+  searchXY[6].Form("PMTMap%iXY", 0);
+  searchXY[7].Form("PMTMap%iXY", 1);
 
   for (int i = 0; i < NDET - 2; ++i)
     saveXY[i] = Form("SipmSumMap%iXY", i);
-  saveXY[5].Form("PMTSumMap%iXY", 0);
-  saveXY[6].Form("PMTSumMap%iXY", 1);
+  saveXY[6].Form("PMTSumMap%iXY", 0);
+  saveXY[7].Form("PMTSumMap%iXY", 1);
 
   /* YZ */
   for (int i = 0; i < NDET - 2; ++i)
     searchYZ[i] = Form("SipmMap%iYZ", i);
-  searchYZ[5].Form("PMTMap%iYZ", 0);
-  searchYZ[6].Form("PMTMap%iYZ", 1);
+  searchYZ[6].Form("PMTMap%iYZ", 0);
+  searchYZ[7].Form("PMTMap%iYZ", 1);
 
   for (int i = 0; i < NDET - 2; ++i)
     saveYZ[i] = Form("SipmSumMap%iYZ", i);
-  saveYZ[5].Form("PMTSumMap%iYZ", 0);
-  saveYZ[6].Form("PMTSumMap%iYZ", 1);
+  saveYZ[6].Form("PMTSumMap%iYZ", 0);
+  saveYZ[7].Form("PMTSumMap%iYZ", 1);
 
   /* RZ */
   for (int i = 0; i < NDET - 2; ++i)
     searchRZ[i] = Form("SipmMap%iYZ", i);
-  searchRZ[5].Form("PMTMap%iYZ", 0);
-  searchRZ[6].Form("PMTMap%iYZ", 1);
+  searchRZ[6].Form("PMTMap%iYZ", 0);
+  searchRZ[7].Form("PMTMap%iYZ", 1);
 
   for (int i = 0; i < NDET - 2; ++i)
     saveRZ[i] = Form("SipmSumMap%iYZ", i);
-  saveRZ[5].Form("PMTSumMap%iYZ", 0);
-  saveRZ[6].Form("PMTSumMap%iYZ", 1);
+  saveRZ[6].Form("PMTSumMap%iYZ", 0);
+  saveRZ[7].Form("PMTSumMap%iYZ", 1);
 
   for (int i = 0; i < NDET; ++i) printf(" name for %i %s \n",i,searchM[i].Data());
 
