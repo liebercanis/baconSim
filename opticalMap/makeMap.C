@@ -140,7 +140,7 @@ void getInit(TString fname)
   }
 
   for(int i=0; i< NDET; ++i) if(hMap[i]) {
-    if(hMap[i]->GetName()) {
+    if(hMap[i]) {
       cout << " init " << fname << " " << hMap[i]->GetName() << " entries " << hMap[i]->GetEntries() << endl;
       cout << " init " << fname << " " << hMapXY[i]->GetName() << " entries " << hMapXY[i]->GetEntries() << endl;
       cout << " init " << fname << " " << hMapYZ[i]->GetName() << " entries " << hMapYZ[i]->GetEntries() << endl;
@@ -205,7 +205,7 @@ void getOne(TString fname)
 
   for (int i = 0; i < NDET; ++i)
   {
-    if(hMap[i]->GetName()) {
+    if(hMap[i]) {
       cout << " sum " << fname << " " << hMap[i]->GetName() << " entries " << hMap[i]->GetEntries() << endl;
       cout << " sum " << fname << " " << hMapXY[i]->GetName() << " entries " << hMapXY[i]->GetEntries() << endl;
       cout << " sum " << fname << " " << hMapYZ[i]->GetName() << " entries " << hMapYZ[i]->GetEntries() << endl;
