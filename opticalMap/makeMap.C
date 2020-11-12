@@ -57,6 +57,10 @@ void makeNames(){
     saveRZ[i] = Form("SipmSumMap%iYZ", i);
   saveRZ[5].Form("PMTSumMap%iYZ", 0);
   saveRZ[6].Form("PMTSumMap%iYZ", 1);
+
+  for (int i = 0; i < NDET; ++i) printf(" name for %i %s \n",i,searchM[i].Data());
+
+
 }
 
 void histSum( TH3D * h1, TH3D* h2) {
